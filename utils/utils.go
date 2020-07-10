@@ -5,13 +5,28 @@ import (
 	"net/http"
 )
 
-//Message is exported
-func Message(status bool, message string, code int) map[string]interface{} {
-	return map[string]interface{} {"status" : status, "message" : message, "code" : code}
+type Data struct {
+	statusCode int
+	message string
+	result bool
 }
 
-//Respond is exported
-func RespondJson(w http.ResponseWriter, data map[string] interface{})  {
+func (data Data) send(w http.ResponseWriter) interface{} {
 	w.Header().Add("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(data)
+	w.WriteHeader(data.statusCode)
+	return json.NewEncoder(w).Encode(data)
 }
+
+//Message is exported
+//func NewMessage(result bool, message string) map[string]interface{} {
+//	return map[string]interface{} {"result" : result, "message" : message}
+//}
+
+func Response(result bool, message string, statuscode int) *Data {
+	 return &Data{
+	 	statusCode : statuscode,
+	 	message : message,
+	 	result : result,
+	 }
+}
+
