@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+
+	_ "github.com/GhvstCode/Blog-Api/models"
 )
 
 func main(){
@@ -33,3 +35,4 @@ func handleRequest(){
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
+///home/tobax/mongodb/bin/mongod --dbpath=/home/tobax/mongodb-data

@@ -18,9 +18,9 @@ func (data Data) send(w http.ResponseWriter) interface{} {
 }
 
 //Message is exported
-//func NewMessage(result bool, message string) map[string]interface{} {
-//	return map[string]interface{} {"result" : result, "message" : message}
-//}
+func Message(result bool, message string) map[string]interface{} {
+	return map[string]interface{} {"result" : result, "message" : message}
+}
 
 func Response(result bool, message string, statuscode int) *Data {
 	 return &Data{
