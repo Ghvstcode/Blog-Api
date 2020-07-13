@@ -28,7 +28,7 @@ type UserModel struct {
 type Sub struct {
 	SubID string `bson:"subID" json:"subID"`
 }
-
+Thhis is just a test of my github
 func (u *UserModel) validate() map[string]interface{} {
 	if !strings.Contains(u.Email, "@") {
 		return utils.Message(false, "Provide a valid email address")
