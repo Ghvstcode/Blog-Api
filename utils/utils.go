@@ -21,7 +21,7 @@ func (data Data) send(w http.ResponseWriter) interface{} {
 func Message(result bool, message string) map[string]interface{} {
 	return map[string]interface{} {"result" : result, "message" : message}
 }
-
+//Testing Testing
 func Response(result bool, message string, statuscode int) *Data {
 	 return &Data{
 	 	statusCode : statuscode,
