@@ -2,9 +2,11 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,7 +17,7 @@ import (
 )
 
 type Token struct {
-	UserId uint
+	UserId primitive.ObjectID
 	jwt.StandardClaims
 }
 
@@ -37,6 +39,22 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
+func genAuthToken(u *UserModel)(string, error){
+	t := &Token{
+		UserId: u.ID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
+	tokenString, err := token.SignedString([]byte("os.Getenv"))//Change this to load the jwt secret from env file.
+	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+}
+
 func (u *UserModel) validate() *utils.Data {
 	if !strings.Contains(u.Email, "@") {
 		return utils.Response(false, "Provide a valid email address", http.StatusBadRequest)
@@ -44,7 +62,7 @@ func (u *UserModel) validate() *utils.Data {
 	if passwordValid, _ :=regexp.MatchString("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", u.Password); !passwordValid{
 		return utils.Response(false, "Password must be longer than 8 chars, and contain at least one digit!" , http.StatusBadRequest)
 	}
-	_, err := User.Find(context.TODO(), bson.D{{"name", "Bob"}})
+	_, err := User.Find(context.TODO(), bson.D{{"Email", u.Email}})
 	if err == nil {
 		return utils.Response(false, "Invalid Email!" , http.StatusBadRequest)
 	}
@@ -59,7 +77,25 @@ func (u *UserModel) Create() *utils.Data{
 
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
-		return utils.Response(false, "An error occurred! Unable to save user", http.StatusInternalServerError)
+		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
 	u.Password = string(hashedPassword)
+
+	_, err = User.InsertOne(context.TODO(), &u)
+	if err != nil {
+		fmt.Print(err)
+		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
+	}
+
+	t, e := genAuthToken(u)
+	if e != nil {
+		return utils.Response(false, "Failed to create account, connection error.", http.StatusBadGateway)
+	}
+
+	u.Token = t
+	u.Password = ""
+
+	response := utils.Response(true, "created", http.StatusCreated)
+	response.Data = u
+	return response
 }

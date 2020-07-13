@@ -9,11 +9,12 @@ type Data struct {
 	StatusCode int
 	Message string
 	Result bool
+	Data interface{}
 }
 
-func (data Data) send(w http.ResponseWriter) interface{} {
+func (data Data) Send(w http.ResponseWriter) interface{} {
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(data.statusCode)
+	w.WriteHeader(data.StatusCode)
 	return json.NewEncoder(w).Encode(data)
 }
 
