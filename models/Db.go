@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var collection *mongo.Collection
+var User *mongo.Collection
 var ctx = context.TODO()
 
 func init() {
@@ -33,7 +33,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//
 	//Blog := client.Database("Blog-Api").Collection("blog")
-	//User := client.Database("Blog-Api").Collection("user")
+	User = client.Database("Blog-Api").Collection("user")
 }

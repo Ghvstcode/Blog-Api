@@ -6,9 +6,9 @@ import (
 )
 
 type Data struct {
-	statusCode int
-	message string
-	result bool
+	StatusCode int
+	Message string
+	Result bool
 }
 
 func (data Data) send(w http.ResponseWriter) interface{} {
@@ -21,13 +21,12 @@ func (data Data) send(w http.ResponseWriter) interface{} {
 func Message(result bool, message string) map[string]interface{} {
 	return map[string]interface{} {"result" : result, "message" : message}
 }
-//Testing Testing
-//The hell yu waiting for??
+
 func Response(result bool, message string, statuscode int) *Data {
 	 return &Data{
-	 	statusCode : statuscode,
-	 	message : message,
-	 	result : result,
+	 	StatusCode : statuscode,
+	 	Message : message,
+	 	Result : result,
 	 }
 }
 
