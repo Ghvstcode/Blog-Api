@@ -20,7 +20,7 @@ func init() {
 	//mongoContext,_ := context.WithTimeout(context.Background(), 15 * time.Second)
 	Uri := envUri
 	if !ok{
-		log.Print("unable to connect to remote Database")
+		//log.Print("unable to connect to remote Database")
 		Uri = "mongodb://localhost:27017"
 	}
 	clientOptions := options.Client().ApplyURI(Uri)

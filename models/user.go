@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
@@ -59,8 +58,16 @@ func (u *UserModel) validate() *utils.Data {
 	if !strings.Contains(u.Email, "@") {
 		return utils.Response(false, "Provide a valid email address", http.StatusBadRequest)
 	}
-	if passwordValid, _ :=regexp.MatchString("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", u.Password); !passwordValid{
-		return utils.Response(false, "Password must be longer than 8 chars, and contain at least one digit!" , http.StatusBadRequest)
+	//if _, err :=regexp.MatchString(`(^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$)`, u.Password); err != nil{
+	//	fmt.Print(err)
+	//	return utils.Response(false, "Password must be longer than 8 chars, and contain at least one digit!" , http.StatusBadRequest)
+	//}
+	if len(u.Password) < 6 {
+		return utils.Response(false, "Password is required", http.StatusBadRequest)
+	}
+	//Check to see if password is secure
+	if strings.Contains(u.Password, "abcdefg") {
+		return utils.Response(false, "Please provide a valid password", http.StatusBadRequest)
 	}
 	_, err := User.Find(context.TODO(), bson.D{{"Email", u.Email}})
 	if err == nil {
