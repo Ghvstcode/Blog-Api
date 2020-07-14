@@ -22,11 +22,11 @@ type Token struct {
 
 //a struct to represent a User
 type UserModel struct {
-	ID        primitive.ObjectID `bson:"_id"`
+	ID        	primitive.ObjectID  `bson:"name" json:"ID"`
 	Name 		string 	`bson:"name" json:"name"`
 	Email    	string 	`bson:"email" json:"email"`
 	Password 	string 	`bson:"password" json:"password"`
-	Token    	string 	`bson:"token" json:"token"`
+	Token 		string 	`bson:"token" json:"token"`
 	Subscriptions []Sub `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
@@ -65,12 +65,19 @@ func (u *UserModel) validate() *utils.Data {
 	if len(u.Password) < 6 {
 		return utils.Response(false, "Password is required", http.StatusBadRequest)
 	}
+
+	if u.Name == ""{
+		return utils.Response(false, "Name is required", http.StatusBadRequest)
+	}
+	//if len(u.Name) < 3 {
+	//	return utils.Response(false, "Name is required", http.StatusBadRequest)
+	//}
 	//Check to see if password is secure
 	if strings.Contains(u.Password, "abcdefg") {
 		return utils.Response(false, "Please provide a valid password", http.StatusBadRequest)
 	}
 	_, err := User.Find(context.TODO(), bson.D{{"Email", u.Email}})
-	if err == nil {
+	if err != nil {
 		return utils.Response(false, "Invalid Email!" , http.StatusBadRequest)
 	}
 
@@ -88,12 +95,12 @@ func (u *UserModel) Create() *utils.Data{
 	}
 	u.Password = string(hashedPassword)
 
-	_, err = User.InsertOne(context.TODO(), &u)
+	res, err := User.InsertOne(context.TODO(), &u)
 	if err != nil {
 		fmt.Print(err)
 		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
-
+	u.ID = res.InsertedID.(primitive.ObjectID)
 	t, e := genAuthToken(u)
 	if e != nil {
 		return utils.Response(false, "Failed to create account, connection error.", http.StatusBadGateway)
