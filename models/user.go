@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -22,6 +23,7 @@ type Token struct {
 //a struct to represent a User
 type UserModel struct {
 	_Id          primitive.ObjectID `bson:"_id, omitempty" json:"_id"`
+	//_Id          string `json:"id"`
 	ID            string             `json:"ID, omitempty"`
 	Name          string             `bson:"name" json:"name"`
 	Email         string             `bson:"email" json:"email"`
@@ -100,7 +102,7 @@ func (u *UserModel) Create() *utils.Data{
 	}
 	u.Password = string(hashedPassword)
 
-	res, err := User.InsertOne(context.TODO(), &u)
+	//res, err := User.InsertOne(context.TODO(), &u)
 	//res, err := User.InsertOne(context.TODO(), &UserModel {
 	//	//_Id:           primitive.NewObjectID(),
 	//	Name:          u.Name,
@@ -137,7 +139,9 @@ func Login (email string,  password string) *utils.Data {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(user)
 	}()
 	Error := <- ErrorChan
-	if Error == nil {
+	fmt.Print(user)
+	if Error != nil {
+		fmt.Println(Error)
 		return utils.Response(false, "Unable to  Login!" , http.StatusBadRequest)
 	}
 
@@ -147,7 +151,7 @@ func Login (email string,  password string) *utils.Data {
 		return utils.Response(false, "Invalid login credentials. Please try again", http.StatusUnauthorized)
 	}
 	user.Password = ""
-
+	//user.ID = user._Id.Hex()
 	t, _ := genAuthToken(user)//We would eventually check for the error & Log it later bla bla bla
 	response := utils.Response(true, "created", http.StatusCreated)
 	response.Token = t

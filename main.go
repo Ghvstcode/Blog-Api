@@ -26,8 +26,8 @@ func handleRequest(){
 	//b := r.PathPrefix("/blog").Subrouter()
 
 
-	u.HandleFunc("/new", controllers.NewUser)
-	u.HandleFunc("/login", controllers.Login)
+	u.HandleFunc("/new", controllers.NewUser).Methods(http.MethodPost)
+	u.HandleFunc("/login", controllers.Login).Methods(http.MethodPost)
 	//u.HandleFunc("/resetPassword", returnAllArticles)
 	//u.HandleFunc("/recoverPassword", returnAllArticles)
 	//
