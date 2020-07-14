@@ -10,6 +10,7 @@ type Data struct {
 	Message string
 	Result bool
 	Data interface{}
+	Token string
 }
 
 func (data Data) Send(w http.ResponseWriter) interface{} {

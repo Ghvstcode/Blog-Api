@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -22,11 +21,10 @@ type Token struct {
 
 //a struct to represent a User
 type UserModel struct {
-	ID        	primitive.ObjectID  `bson:"name" json:"ID"`
+	ID        	primitive.ObjectID  `bson:"_id" json:"ID"`
 	Name 		string 	`bson:"name" json:"name"`
 	Email    	string 	`bson:"email" json:"email"`
 	Password 	string 	`bson:"password" json:"password"`
-	Token 		string 	`bson:"token" json:"token"`
 	Subscriptions []Sub `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
@@ -95,21 +93,26 @@ func (u *UserModel) Create() *utils.Data{
 	}
 	u.Password = string(hashedPassword)
 
-	res, err := User.InsertOne(context.TODO(), &u)
+	_, err = User.InsertOne(context.TODO(), &UserModel {
+		ID: primitive.NewObjectID(),
+		Name: u.Name,
+		Email: u.Email,
+		Subscriptions: u.Subscriptions,
+		Password: u.Password,
+	})
 	if err != nil {
-		fmt.Print(err)
 		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
-	u.ID = res.InsertedID.(primitive.ObjectID)
+
 	t, e := genAuthToken(u)
 	if e != nil {
 		return utils.Response(false, "Failed to create account, connection error.", http.StatusBadGateway)
 	}
 
-	u.Token = t
 	u.Password = ""
 
 	response := utils.Response(true, "created", http.StatusCreated)
-	response.Data = u
+	response.Token = t
+	response.Data = [1]*UserModel{u}
 	return response
 }
