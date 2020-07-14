@@ -27,7 +27,7 @@ func handleRequest(){
 
 
 	u.HandleFunc("/new", controllers.NewUser)
-	//u.HandleFunc("/login", returnAllArticles)
+	u.HandleFunc("/login", controllers.Login)
 	//u.HandleFunc("/resetPassword", returnAllArticles)
 	//u.HandleFunc("/recoverPassword", returnAllArticles)
 	//

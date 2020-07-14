@@ -76,14 +76,6 @@ func (u *UserModel) validate() *utils.Data {
 		return utils.Response(false, "Please provide a valid password", http.StatusBadRequest)
 	}
 
-	//a, err := User.Find(context.TODO(), bson.D{{"email", u.Email}})
-	//if err == nil {
-	//	fmt.Print(&err)
-	//	fmt.Print("a: ", a.Err())
-	//	return utils.Response(false, "Invalid Email!" , http.StatusBadRequest)
-	//}
-
-
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
 	go func(){
@@ -134,5 +126,31 @@ func (u *UserModel) Create() *utils.Data{
 	response := utils.Response(true, "created", http.StatusCreated)
 	response.Token = t
 	response.Data = [1]*UserModel{u}
+	return response
+}
+func Login (email string,  password string) *utils.Data {
+	user := &UserModel{}
+
+	ErrorChan := make(chan error, 1)
+	defer close(ErrorChan)
+	go func(){
+		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(user)
+	}()
+	Error := <- ErrorChan
+	if Error == nil {
+		return utils.Response(false, "Unable to  Login!" , http.StatusBadRequest)
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return utils.Response(false, "Invalid login credentials. Please try again", http.StatusUnauthorized)
+	}
+	user.Password = ""
+
+	t, _ := genAuthToken(user)//We would eventually check for the error & Log it later bla bla bla
+	response := utils.Response(true, "created", http.StatusCreated)
+	response.Token = t
+	response.Data = [1]*UserModel{user}
 	return response
 }
