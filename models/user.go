@@ -22,13 +22,19 @@ type Token struct {
 
 //a struct to represent a User
 type UserModel struct {
-	_Id          primitive.ObjectID `bson:"_id, omitempty" json:"_id"`
-	//_Id          string `json:"id"`
-	ID            string             `json:"ID, omitempty"`
-	Name          string             `bson:"name" json:"name"`
-	Email         string             `bson:"email" json:"email"`
-	Password      string             `bson:"password" json:"password"`
-	Subscriptions []Sub              `bson:"sub, omitempty" json:"sub, omitempty"`
+	ID         primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
+	Name          string `bson:"name" json:"name"`
+	Email         string `bson:"email" json:"email"`
+	Password      string `bson:"password" json:"password"`
+	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
+}
+
+type ReUserModel struct {
+	ID           string `json:"id, omitempty"`
+	Name          string `bson:"name" json:"name"`
+	Email         string `bson:"email" json:"email"`
+	Password      string `bson:"password" json:"password"`
+	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
 type Sub struct {
@@ -103,20 +109,23 @@ func (u *UserModel) Create() *utils.Data{
 	u.Password = string(hashedPassword)
 
 	//res, err := User.InsertOne(context.TODO(), &u)
-	//res, err := User.InsertOne(context.TODO(), &UserModel {
-	//	//_Id:           primitive.NewObjectID(),
-	//	Name:          u.Name,
-	//	Email:         u.Email,
-	//	Subscriptions: u.Subscriptions,
-	//	Password:      u.Password,
-	//	//ID: u._Id,
-	//})
+	res, err := User.InsertOne(context.TODO(), &UserModel {
+		ID:           primitive.NewObjectID(),
+		Name:          u.Name,
+		Email:         u.Email,
+		Subscriptions: u.Subscriptions,
+		Password:      u.Password,
+		//ID: u._Id,
+	})
+
 	if err != nil {
 		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
 
+	var UID string
 	if oid, ok := res.InsertedID.(primitive.ObjectID); ok {
-			u.ID = oid.Hex()
+			UID = oid.Hex()
+			fmt.Print(oid.Hex())
 	}
 
 	t, e := genAuthToken(u)
@@ -125,9 +134,16 @@ func (u *UserModel) Create() *utils.Data{
 	}
 
 	u.Password = ""
+	v := &ReUserModel{
+		ID:            UID,
+		Name:          u.Name,
+		Email:         u.Email,
+		Password:      "",
+		Subscriptions: u.Subscriptions,
+	}
 	response := utils.Response(true, "created", http.StatusCreated)
 	response.Token = t
-	response.Data = [1]*UserModel{u}
+	response.Data = [1]*ReUserModel{v}
 	return response
 }
 func Login (email string,  password string) *utils.Data {
