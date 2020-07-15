@@ -37,6 +37,11 @@ type ReUserModel struct {
 	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
+type RePassword struct {
+	Password           string `json:"password"`
+	ConfirmPassword    string `json:"confirmpassword"`
+}
+
 type Sub struct {
 	SubID string `bson:"subID" json:"subID"`
 }
@@ -155,9 +160,7 @@ func Login (email string,  password string) *utils.Data {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(user)
 	}()
 	Error := <- ErrorChan
-	fmt.Print(user)
 	if Error != nil {
-		fmt.Println(Error)
 		return utils.Response(false, "Unable to  Login!" , http.StatusBadRequest)
 	}
 
@@ -186,8 +189,7 @@ func ResetPassword(email string, Host string) *utils.Data {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(u)
 	}()
 	Error := <- ErrorChan
-	if Error == nil {
-		fmt.Print(Error)
+	if Error != nil {
 		return utils.Response(false, "An Error occurred" , http.StatusBadRequest)
 	}
 	//3. Generate the auth token using the UsersName & Email along with the created at field as its signature!
@@ -200,7 +202,6 @@ func ResetPassword(email string, Host string) *utils.Data {
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
 	tokenString, err := token.SignedString([]byte(u.ID.Hex() + u.Email))//Change this to load the jwt secret from env file.
-	fmt.Print("TokenString", tokenString)
 	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
 	if err != nil {
 		return utils.Response(false, "An Error occurred" , http.StatusInternalServerError)
@@ -211,3 +212,55 @@ func ResetPassword(email string, Host string) *utils.Data {
 	return utils.Response(true, "Email Sent" , http.StatusAccepted)
 }
 
+func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
+	u := &UserModel{}
+	ErrorChan := make(chan error, 1)
+	defer close(ErrorChan)
+	go func(){
+		ErrorChan <- User.FindOne(context.TODO(), bson.M{"ID": id}).Decode(u)
+	}()
+	Error := <- ErrorChan
+	if Error != nil {
+		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
+	}
+
+	tk := &Token{}
+
+	token, err := jwt.ParseWithClaims(tkn, tk, func(token *jwt.Token) (interface{}, error) {
+		return []byte(u.ID.Hex() + u.Email), nil
+	})
+
+	if err != nil {
+		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
+	}
+
+	if !token.Valid {
+		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
+	}
+
+	if P.Password != P.ConfirmPassword{
+		return utils.Response(false, "Passwords do not match", http.StatusBadRequest)
+	}
+
+	hashedPassword, err := Hash(u.Password)
+	if err != nil {
+		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
+	}
+
+
+	filter := bson.D{{"email", u.Email}}
+	update := bson.D{{"$set", bson.D{{"password", hashedPassword}}}}
+
+	_, err = User.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
+	}
+
+	u.Password = ""
+	response := utils.Response(true, "created", http.StatusCreated)
+	response.Data = [1]*UserModel{u}
+	return response
+}
+
+//
+//localhost:8080/recoverPassword?id=5f0f3298c05561671bcd7f97&t=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1ZjBmMzI5OGMwNTU2MTY3MWJjZDdmOTdfSmFuIF8yIDE1OjA0OjA1LjAwMDAwMDAwMCIsImV4cCI6MTU5NDgzODU3OX0.7c0EhK971LAUyIa6p_JIeTG-H_rrsmPTlue3hQcov9s

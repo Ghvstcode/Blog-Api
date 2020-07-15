@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/GhvstCode/Blog-Api/models"
 	"github.com/GhvstCode/Blog-Api/utils"
 )
@@ -41,4 +43,17 @@ func ResetPassword (w http.ResponseWriter, r *http.Request) {
 	}
 	res := models.ResetPassword(user.Email, r.Host)
 	res.Send(w)
+}
+
+func RecoverPassword(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	id := vars["id"]
+	t := vars["t"]
+
+	user := &models.RePassword{}
+	err := json.NewDecoder(r.Body).Decode(user)
+	if err != nil {
+		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
+		return
+	}
 }
