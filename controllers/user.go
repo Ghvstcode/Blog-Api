@@ -56,4 +56,6 @@ func RecoverPassword(w http.ResponseWriter, r *http.Request){
 		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
 		return
 	}
+
+	res := models.RecoverPassword(user, id, t)
 }
