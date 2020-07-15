@@ -2,7 +2,13 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 type Data struct {
@@ -24,11 +30,30 @@ func Message(result bool, message string) map[string]interface{} {
 	return map[string]interface{} {"result" : result, "message" : message}
 }
 
-func Response(result bool, message string, statuscode int) *Data {
+func Response(result bool, message string, statusCode int) *Data {
 	 return &Data{
-	 	StatusCode : statuscode,
+	 	StatusCode : statusCode,
 	 	Message : message,
 	 	Result : result,
 	 }
 }
 
+func Email(email string, Name string, Token string, Host string, Id string){
+	fmt.Printf("Click on the link below to reset the password for your Bloggy account\n " + Host+"/recoverPassword?id="+Id+"&t="+Token + "\nThis link expires in 15 minutes.")
+	from := mail.NewEmail("BlogAPI", "BlogAPI@exaample.com")
+	subject := "Password Reset"
+	to := mail.NewEmail(Name, email)
+	content := mail.NewContent("text/plain", "Click on the link below to reset the password for your HotSys account\n " + Host+"/recoverPassword?id="+ Id +"&t="+Token + "\nThis link expires in 15 minutes. Ignore this mail if you had nothing to do with this.")
+	m := mail.NewV3MailInit(from, subject, to, content)
+	apiKey,ok := os.LookupEnv("SENDGRID_API_KEY")
+	if ok == false{
+		apiKey = os.Getenv("SENDGRID_API_KEY")
+	}
+	request := sendgrid.GetRequest(apiKey, "/v3/mail/send", "https://api.sendgrid.com")
+	request.Method = "POST"
+	request.Body = mail.GetRequestBody(m)
+	_, err := sendgrid.API(request)
+	if err != nil {
+		log.Println(err)
+	}
+}

@@ -16,7 +16,7 @@ import (
 )
 
 type Token struct {
-	UserId string
+	UserId interface{}
 	jwt.StandardClaims
 }
 
@@ -45,9 +45,9 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
-func genAuthToken(u *UserModel)(string, error){
+func genAuthToken(id string)(string, error){
 	t := &Token{
-		UserId: u.Name,
+		UserId: id + "_" + time.StampNano,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},
@@ -96,6 +96,7 @@ func (u *UserModel) validate() *utils.Data {
 
 	return utils.Response(true, "Validated", http.StatusAccepted)
 }
+
 func (u *UserModel) Create() *utils.Data{
 	resp := u.validate()
 	ok := resp.Result; if !ok {
@@ -125,10 +126,9 @@ func (u *UserModel) Create() *utils.Data{
 	var UID string
 	if oid, ok := res.InsertedID.(primitive.ObjectID); ok {
 			UID = oid.Hex()
-			fmt.Print(oid.Hex())
 	}
 
-	t, e := genAuthToken(u)
+	t, e := genAuthToken(UID)
 	if e != nil {
 		return utils.Response(false, "Failed to create account, connection error.", http.StatusBadGateway)
 	}
@@ -168,9 +168,46 @@ func Login (email string,  password string) *utils.Data {
 	}
 	user.Password = ""
 	//user.ID = user._Id.Hex()
-	t, _ := genAuthToken(user)//We would eventually check for the error & Log it later bla bla bla
+	t, _ := genAuthToken(user.ID.Hex())//We would eventually check for the error & Log it later bla bla bla
+	fmt.Print("LoginTok", user.ID.Hex())
 	response := utils.Response(true, "created", http.StatusCreated)
 	response.Token = t
 	response.Data = [1]*UserModel{user}
 	return response
 }
+
+func ResetPassword(email string, Host string) *utils.Data {
+	u := &UserModel{}
+	//1.Take in the users Email!
+	//2.Check the User exists in the DB and pass the users ID!
+	ErrorChan := make(chan error, 1)
+	defer close(ErrorChan)
+	go func(){
+		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(u)
+	}()
+	Error := <- ErrorChan
+	if Error == nil {
+		fmt.Print(Error)
+		return utils.Response(false, "An Error occurred" , http.StatusBadRequest)
+	}
+	//3. Generate the auth token using the UsersName & Email along with the created at field as its signature!
+	t := &Token{
+		UserId: u.ID.Hex() + "_" + time.StampNano,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
+	tokenString, err := token.SignedString([]byte(u.ID.Hex() + u.Email))//Change this to load the jwt secret from env file.
+	fmt.Print("TokenString", tokenString)
+	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
+	if err != nil {
+		return utils.Response(false, "An Error occurred" , http.StatusInternalServerError)
+	}
+	//return tokenString, nil
+	//3.send the the generated Auth token to the persons Email!
+	utils.Email(u.Email, u.Name, tokenString, Host, u.ID.Hex())
+	return utils.Response(true, "Email Sent" , http.StatusAccepted)
+}
+

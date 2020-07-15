@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/GhvstCode/Blog-Api/models"
@@ -20,6 +21,7 @@ func NewUser (w http.ResponseWriter, r *http.Request) {
 }
 
 func Login (w http.ResponseWriter, r *http.Request) {
+	fmt.Print(r.Host)
 	user := &models.UserModel{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
@@ -27,5 +29,16 @@ func Login (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res := models.Login(user.Email, user.Password)
+	res.Send(w)
+}
+
+func ResetPassword (w http.ResponseWriter, r *http.Request) {
+	user := &models.UserModel{}
+	err := json.NewDecoder(r.Body).Decode(user)
+	if err != nil {
+		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
+		return
+	}
+	res := models.ResetPassword(user.Email, r.Host)
 	res.Send(w)
 }

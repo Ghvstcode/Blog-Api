@@ -28,8 +28,8 @@ func handleRequest(){
 
 	u.HandleFunc("/new", controllers.NewUser).Methods(http.MethodPost)
 	u.HandleFunc("/login", controllers.Login).Methods(http.MethodPost)
-	//u.HandleFunc("/resetPassword", returnAllArticles)
-	//u.HandleFunc("/recoverPassword", returnAllArticles)
+	u.HandleFunc("/resetPassword", controllers.ResetPassword).Methods(http.MethodPost)
+	//u.HandleFunc("/recoverPassword/{id}/{t}", returnAllArticles)
 	//
 	//b.HandleFunc("/", returnAllArticles)
 	//b.HandleFunc("/new", createNewArticle).Methods("POST")
