@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
@@ -173,7 +174,7 @@ func Login (email string,  password string) *utils.Data {
 	//user.ID = user._Id.Hex()
 	t, _ := genAuthToken(user.ID.Hex())//We would eventually check for the error & Log it later bla bla bla
 	fmt.Print("LoginTok", user.ID.Hex())
-	response := utils.Response(true, "created", http.StatusCreated)
+	response := utils.Response(true, "Logged In", http.StatusOK)
 	response.Token = t
 	response.Data = [1]*UserModel{user}
 	return response
@@ -194,14 +195,14 @@ func ResetPassword(email string, Host string) *utils.Data {
 	}
 	//3. Generate the auth token using the UsersName & Email along with the created at field as its signature!
 	t := &Token{
-		UserId: u.ID.Hex() + "_" + time.StampNano,
+		UserId: u.ID.Hex(),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
-	tokenString, err := token.SignedString([]byte(u.ID.Hex() + u.Email))//Change this to load the jwt secret from env file.
+	tokenString, err := token.SignedString([]byte("Helloworld"))//Change this to load the jwt secret from env file.
 	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
 	if err != nil {
 		return utils.Response(false, "An Error occurred" , http.StatusInternalServerError)
@@ -213,28 +214,44 @@ func ResetPassword(email string, Host string) *utils.Data {
 }
 
 func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
+	}
+	fmt.Print("id :", id)
 	u := &UserModel{}
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
 	go func(){
-		ErrorChan <- User.FindOne(context.TODO(), bson.M{"ID": id}).Decode(u)
+		ErrorChan <- User.FindOne(context.TODO(), bson.M{"_id": oid}).Decode(u)
 	}()
 	Error := <- ErrorChan
 	if Error != nil {
+		fmt.Print("Channel :", Error)
 		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
 	}
 
 	tk := &Token{}
 
 	token, err := jwt.ParseWithClaims(tkn, tk, func(token *jwt.Token) (interface{}, error) {
-		return []byte(u.ID.Hex() + u.Email), nil
+		//return []byte("Helloworld"), nil
+		//return base64.URLEncoding.DecodeString("Helloworld"), nil
+		v, err := base64.URLEncoding.DecodeString("Helloworld")
+		if err != nil {
+			fmt.Print("EnCERR :", err)
+			return utils.Response(false, "Malformed authentication token", http.StatusForbidden), nil
+		}
+
+		return v, nil
 	})
 
 	if err != nil {
+		fmt.Print("tOKENERR", err)
 		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
 	}
 
 	if !token.Valid {
+		fmt.Print("tOKENERR2", err)
 		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
 	}
 
@@ -244,6 +261,7 @@ func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
 
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
+		fmt.Print("Hash :", err)
 		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
 	}
 
@@ -253,6 +271,7 @@ func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
 
 	_, err = User.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
+		fmt.Print("update :", err)
 		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
 	}
 

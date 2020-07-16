@@ -58,4 +58,5 @@ func RecoverPassword(w http.ResponseWriter, r *http.Request){
 	}
 
 	res := models.RecoverPassword(user, id, t)
+	res.Send(w)
 }
