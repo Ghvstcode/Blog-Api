@@ -2,19 +2,20 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
 	"github.com/GhvstCode/Blog-Api/models"
 	"github.com/GhvstCode/Blog-Api/utils"
+	l "github.com/GhvstCode/Blog-Api/utils/logger"
 )
 
 func NewUser (w http.ResponseWriter, r *http.Request) {
 	user := &models.UserModel{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
 		return
 	}
@@ -23,10 +24,11 @@ func NewUser (w http.ResponseWriter, r *http.Request) {
 }
 
 func Login (w http.ResponseWriter, r *http.Request) {
-	fmt.Print(r.Host)
+	//fmt.Print(r.Host)
 	user := &models.UserModel{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
 		return
 	}
@@ -35,9 +37,10 @@ func Login (w http.ResponseWriter, r *http.Request) {
 }
 
 func ResetPassword (w http.ResponseWriter, r *http.Request) {
-	user := &models.UserModel{}
+	user := &models.ResPassword{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
 		return
 	}
@@ -50,9 +53,10 @@ func RecoverPassword(w http.ResponseWriter, r *http.Request){
 	id := vars["id"]
 	t := vars["t"]
 
-	user := &models.RePassword{}
+	user := &models.RecPassword{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		utils.Response(false, "Invalid request", http.StatusBadRequest).Send(w)
 		return
 	}

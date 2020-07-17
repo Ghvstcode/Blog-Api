@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
@@ -14,6 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/GhvstCode/Blog-Api/utils"
+	l "github.com/GhvstCode/Blog-Api/utils/logger"
 )
 
 type Token struct {
@@ -38,9 +38,13 @@ type ReUserModel struct {
 	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
-type RePassword struct {
+type RecPassword struct {
 	Password           string `json:"password"`
-	ConfirmPassword    string `json:"confirmpassword"`
+	ConfirmPassword    string `json:"confirmPassword"`
+}
+
+type ResPassword struct {
+	Email         string `json:"email"`
 }
 
 type Sub struct {
@@ -60,7 +64,6 @@ func genAuthToken(id string)(string, error){
 	}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
 	tokenString, err := token.SignedString([]byte("os.Getenv"))//Change this to load the jwt secret from env file.
-	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
 	if err != nil {
 		return "", err
 	}
@@ -111,21 +114,22 @@ func (u *UserModel) Create() *utils.Data{
 
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
 	u.Password = string(hashedPassword)
 
-	//res, err := User.InsertOne(context.TODO(), &u)
+
 	res, err := User.InsertOne(context.TODO(), &UserModel {
 		ID:           primitive.NewObjectID(),
 		Name:          u.Name,
 		Email:         u.Email,
 		Subscriptions: u.Subscriptions,
 		Password:      u.Password,
-		//ID: u._Id,
 	})
 
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An error occurred! Unable to create user", http.StatusInternalServerError)
 	}
 
@@ -136,6 +140,7 @@ func (u *UserModel) Create() *utils.Data{
 
 	t, e := genAuthToken(UID)
 	if e != nil {
+		l.ErrorLogger.Println(e)
 		return utils.Response(false, "Failed to create account, connection error.", http.StatusBadGateway)
 	}
 
@@ -152,6 +157,7 @@ func (u *UserModel) Create() *utils.Data{
 	response.Data = [1]*ReUserModel{v}
 	return response
 }
+
 func Login (email string,  password string) *utils.Data {
 	user := &UserModel{}
 
@@ -162,12 +168,14 @@ func Login (email string,  password string) *utils.Data {
 	}()
 	Error := <- ErrorChan
 	if Error != nil {
+		l.ErrorLogger.Println(Error)
 		return utils.Response(false, "Unable to  Login!" , http.StatusBadRequest)
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "Invalid login credentials. Please try again", http.StatusUnauthorized)
 	}
 	user.Password = ""
@@ -202,24 +210,25 @@ func ResetPassword(email string, Host string) *utils.Data {
 	}
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
-	tokenString, err := token.SignedString([]byte("Helloworld"))//Change this to load the jwt secret from env file.
-	//tokenString, err := token.SignedString([]byte(os.Getenv("token_password")))
+	tokenString, err := token.SignedString([]byte(u.ID.String()+"."+u.Email))
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An Error occurred" , http.StatusInternalServerError)
 	}
-	//return tokenString, nil
-	//3.send the the generated Auth token to the persons Email!
+
 	utils.Email(u.Email, u.Name, tokenString, Host, u.ID.Hex())
 	return utils.Response(true, "Email Sent" , http.StatusAccepted)
 }
 
-func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
+func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data{
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
 	}
-	fmt.Print("id :", id)
+
 	u := &UserModel{}
+
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
 	go func(){
@@ -227,51 +236,43 @@ func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
 	}()
 	Error := <- ErrorChan
 	if Error != nil {
-		fmt.Print("Channel :", Error)
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
 	}
 
 	tk := &Token{}
 
 	token, err := jwt.ParseWithClaims(tkn, tk, func(token *jwt.Token) (interface{}, error) {
-		//return []byte("Helloworld"), nil
-		//return base64.URLEncoding.DecodeString("Helloworld"), nil
-		v, err := base64.URLEncoding.DecodeString("Helloworld")
-		if err != nil {
-			fmt.Print("EnCERR :", err)
-			return utils.Response(false, "Malformed authentication token", http.StatusForbidden), nil
-		}
-
-		return v, nil
+		return []byte(u.ID.String()+"."+u.Email), nil
 	})
 
 	if err != nil {
-		fmt.Print("tOKENERR", err)
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
 	}
 
 	if !token.Valid {
-		fmt.Print("tOKENERR2", err)
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
 	}
 
 	if P.Password != P.ConfirmPassword{
+		l.ErrorLogger.Println("Password mismatch")
 		return utils.Response(false, "Passwords do not match", http.StatusBadRequest)
 	}
 
 	hashedPassword, err := Hash(u.Password)
 	if err != nil {
-		fmt.Print("Hash :", err)
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
 	}
-
 
 	filter := bson.D{{"email", u.Email}}
 	update := bson.D{{"$set", bson.D{{"password", hashedPassword}}}}
 
 	_, err = User.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		fmt.Print("update :", err)
+		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An error occurred! Unable to Change password", http.StatusInternalServerError)
 	}
 
@@ -281,5 +282,3 @@ func RecoverPassword(P *RePassword, id string, tkn string) *utils.Data{
 	return response
 }
 
-//
-//localhost:8080/recoverPassword?id=5f0f3298c05561671bcd7f97&t=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1ZjBmMzI5OGMwNTU2MTY3MWJjZDdmOTdfSmFuIF8yIDE1OjA0OjA1LjAwMDAwMDAwMCIsImV4cCI6MTU5NDgzODU3OX0.7c0EhK971LAUyIa6p_JIeTG-H_rrsmPTlue3hQcov9s

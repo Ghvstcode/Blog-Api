@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,10 +11,10 @@ import (
 
 	"github.com/GhvstCode/Blog-Api/controllers"
 	_ "github.com/GhvstCode/Blog-Api/models"
+	l "github.com/GhvstCode/Blog-Api/utils/logger"
 )
 
 func main(){
-	fmt.Print("Hello")
 	handleRequest()
 }
 
@@ -39,7 +37,7 @@ func handleRequest(){
 	//b.HandleFunc("/{id}subscribe", returnSingleArticle)
 
 	//log.Fatal(http.ListenAndServe(":8080", r))
-	l := log.New(os.Stdout, " product-api", log.LstdFlags)
+	//l := log.New(os.Stdout, " product-api", log.LstdFlags)
 	s := &http.Server{
 		Addr: ":8080",
 		Handler: r,
@@ -49,11 +47,10 @@ func handleRequest(){
 	}
 
 	go func () {
-		l.Println("Server is up on port",s.Addr)
+		l.InfoLogger.Println("Server is up on port",s.Addr)
 		err := 	s.ListenAndServe()
 		if err != nil {
-			l.Println("Error starting server on port",s.Addr)
-			os.Exit(1)
+			l.ErrorLogger.Fatal("Error starting server on port",s.Addr)
 		}
 	}()
 
@@ -62,7 +59,7 @@ func handleRequest(){
 	signal.Notify(sigChan, os.Kill)
 
 	sig := <- sigChan
-	l.Print("Received terminate, graceful shutdown! Signal: ",sig)
+	l.InfoLogger.Println("Received terminate, graceful shutdown! Signal: ",sig)
 
 	tc, _:= context.WithTimeout(context.Background(), 30*time.Second)
 	_ = s.Shutdown(tc)
