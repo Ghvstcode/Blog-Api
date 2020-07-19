@@ -283,27 +283,43 @@ func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data{
 }
 
 func GetPosts(id string) *utils.Data {
+	var posts []*BlogModel
 	oid, err := primitive.ObjectIDFromHex(id)
-
 	if err != nil {
 		l.ErrorLogger.Println(err)
 		return utils.Response(false, "Invalid ID" , http.StatusInternalServerError)
 	}
 
-	post := &BlogModel{}
+	//post := &BlogModel{}
 
-	cursor, err := Blog.Find(context.TODO(), bson.M{"owner": oid})
+	cursor, err := Blog.Find(context.TODO(), bson.M{"ownerId": oid})
 
 	if cursor == nil {
 		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
 	}
 
-	if err = cursor.All(context.TODO(), &post); err != nil {
+	for cursor.Next(ctx) {
+		var b BlogModel
+		err := cursor.Decode(&b)
+		if err != nil {
+			l.ErrorLogger.Println(err)
+			return utils.Response(false, "Unable to  Fetch post" , http.StatusBadRequest)
+		}
+		//fmt.Print("b: ", &b)
+		posts = append(posts, &b)
+	}
+
+	if err := cursor.Err(); err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "Unable to  Fetch post" , http.StatusBadRequest)
+		return utils.Response(false, "An Error occurred Unable to  Fetch post" , http.StatusInternalServerError)
+	}
+
+	_ = cursor.Close(ctx)
+	if len(posts) == 0 {
+		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
 	}
 
 	response := utils.Response(true, "Logged In", http.StatusOK)
-	response.Data = []*BlogModel{post}
+	response.Data = posts
 	return response
 }

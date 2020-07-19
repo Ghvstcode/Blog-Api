@@ -30,7 +30,7 @@ func handleRequest(){
 	u.HandleFunc("/login", controllers.Login).Methods(http.MethodPost)
 	r.HandleFunc("/api/resetPassword", controllers.ResetPassword).Methods(http.MethodPost)
 	r.HandleFunc("/api/recoverPassword/{id}/{t}", controllers.RecoverPassword)
-	u.HandleFunc("/", controllers.GetPosts).Methods(http.MethodGet)
+	u.HandleFunc("/posts", controllers.GetPosts).Methods(http.MethodGet)
 
 	b.HandleFunc("/new", controllers.NewPost).Methods("POST")
 	//b.HandleFunc("/{id}", updateArticle).Methods("PUT")

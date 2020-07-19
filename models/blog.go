@@ -99,3 +99,5 @@ func (b *BlogModel)Create(Owner string) *utils.Data {
 	response.Data = [1]*ReBlogModel{r}
 	return response
 }
+
+

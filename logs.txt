@@ -81,3 +81,168 @@ INFO: 2020/07/19 20:14:21 Db.go:19: Connecting to DB...
 WARNING: 2020/07/19 20:14:21 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
 INFO: 2020/07/19 20:14:21 main.go:52: Server is up on port :8080
 INFO: 2020/07/19 20:17:15 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:49:36 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:49:36 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:49:51 main.go:52: Server is up on port :8080
+2020/07/19 20:52:25 http: panic serving [::1]:58916: reflect: call of reflect.Value.Slice on ptr Value
+goroutine 150 [running]:
+net/http.(*conn).serve.func1(0xc0002028c0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9a77c0, 0xc0000a4ca0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+reflect.Value.Slice(0x9a3320, 0xc0000ba0c8, 0x196, 0x0, 0x0, 0x196, 0x0, 0x0)
+	/usr/local/go/src/reflect/value.go:1726 +0x2a5
+go.mongodb.org/mongo-driver/mongo.(*Cursor).All(0xc0000b87d0, 0xbada20, 0xc00010a008, 0x95f400, 0xc0000ba0c8, 0x0, 0x0)
+	/home/tobax/code/go/pkg/mod/go.mongodb.org/mongo-driver@v1.3.5/mongo/cursor.go:207 +0x3e8
+github.com/GhvstCode/Blog-Api/models.GetPosts(0xc0000de060, 0x18, 0xb97b90)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/user.go:301 +0x2bf
+github.com/GhvstCode/Blog-Api/controllers.GetPosts(0xbac8a0, 0xc0000e2000, 0xc0000da300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/user.go:70 +0x9f
+net/http.HandlerFunc.ServeHTTP(0xa64fe8, 0xbac8a0, 0xc0000e2000, 0xc0000da300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbac8a0, 0xc0000e2000, 0xc0000da200)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc0000a4ac0, 0xbac8a0, 0xc0000e2000, 0xc0000da200)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc0001ea240, 0xbac8a0, 0xc0000e2000, 0xc0000da000)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00028c000, 0xbac8a0, 0xc0000e2000, 0xc0000da000)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002028c0, 0xbad9e0, 0xc00006b340)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/19 20:53:14 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:57:10 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:57:10 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:57:10 main.go:52: Server is up on port :8080
+2020/07/19 20:57:21 http: panic serving [::1]:58924: reflect: call of reflect.Value.Slice on ptr Value
+goroutine 39 [running]:
+net/http.(*conn).serve.func1(0xc000223180)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9a77c0, 0xc00000ed00)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+reflect.Value.Slice(0x9a3320, 0xc0002040b0, 0x196, 0x0, 0x0, 0x196, 0x0, 0x0)
+	/usr/local/go/src/reflect/value.go:1726 +0x2a5
+go.mongodb.org/mongo-driver/mongo.(*Cursor).All(0xc000076780, 0xbada20, 0xc00002a0d8, 0x95f400, 0xc0002040b0, 0x0, 0x0)
+	/home/tobax/code/go/pkg/mod/go.mongodb.org/mongo-driver@v1.3.5/mongo/cursor.go:207 +0x3e8
+github.com/GhvstCode/Blog-Api/models.GetPosts(0xc00022a1b0, 0x18, 0xb97b90)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/user.go:301 +0x2bf
+github.com/GhvstCode/Blog-Api/controllers.GetPosts(0xbac8a0, 0xc00024e0e0, 0xc000264300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/user.go:70 +0x9f
+net/http.HandlerFunc.ServeHTTP(0xa64fe8, 0xbac8a0, 0xc00024e0e0, 0xc000264300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbac8a0, 0xc00024e0e0, 0xc000264200)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc00020c940, 0xbac8a0, 0xc00024e0e0, 0xc000264200)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc000218180, 0xbac8a0, 0xc00024e0e0, 0xc000264000)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00024e000, 0xbac8a0, 0xc00024e0e0, 0xc000264000)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc000223180, 0xbad9e0, 0xc000220240)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/19 20:57:25 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:58:18 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:58:18 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:58:18 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 21:03:03 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 21:16:32 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 21:16:32 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 21:16:32 main.go:52: Server is up on port :8080
+2020/07/19 21:18:02 http: panic serving [::1]:59478: reflect: call of reflect.Value.Slice on ptr Value
+goroutine 53 [running]:
+net/http.(*conn).serve.func1(0xc0002aa0a0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9a77c0, 0xc000090420)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+reflect.Value.Slice(0x9a3320, 0xc0002a8048, 0x196, 0x0, 0x0, 0x196, 0x0, 0x0)
+	/usr/local/go/src/reflect/value.go:1726 +0x2a5
+go.mongodb.org/mongo-driver/mongo.(*Cursor).All(0xc000092370, 0xbada60, 0xc00002a0d8, 0x95f400, 0xc0002a8048, 0x0, 0x0)
+	/home/tobax/code/go/pkg/mod/go.mongodb.org/mongo-driver@v1.3.5/mongo/cursor.go:207 +0x3e8
+github.com/GhvstCode/Blog-Api/models.GetPosts(0xc0002ca060, 0x18, 0xc0002c1800)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/user.go:301 +0x2bf
+github.com/GhvstCode/Blog-Api/controllers.GetPosts(0xbac8e0, 0xc0002d0000, 0xc0002c4300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/user.go:72 +0x117
+net/http.HandlerFunc.ServeHTTP(0xa64fe8, 0xbac8e0, 0xc0002d0000, 0xc0002c4300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbac8e0, 0xc0002d0000, 0xc0002c4200)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc00028a240, 0xbac8e0, 0xc0002d0000, 0xc0002c4200)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc00021e300, 0xbac8e0, 0xc0002d0000, 0xc0001d4000)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc000268000, 0xbac8e0, 0xc0002d0000, 0xc0001d4000)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002aa0a0, 0xbada20, 0xc00006a780)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/19 21:23:03 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 21:27:39 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 21:27:39 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 21:27:39 main.go:52: Server is up on port :8080
+2020/07/19 21:29:32 http: panic serving [::1]:59490: reflect: call of reflect.Value.Slice on ptr Value
+goroutine 66 [running]:
+net/http.(*conn).serve.func1(0xc00010f680)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9a77c0, 0xc000282ac0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+reflect.Value.Slice(0x9a3320, 0xc00029a090, 0x196, 0x0, 0x0, 0x196, 0x0, 0x0)
+	/usr/local/go/src/reflect/value.go:1726 +0x2a5
+go.mongodb.org/mongo-driver/mongo.(*Cursor).All(0xc0002a0370, 0xbada60, 0xc00002a0d8, 0x95f400, 0xc00029a090, 0x0, 0x0)
+	/home/tobax/code/go/pkg/mod/go.mongodb.org/mongo-driver@v1.3.5/mongo/cursor.go:207 +0x3e8
+github.com/GhvstCode/Blog-Api/models.GetPosts(0xc0002b6270, 0x18, 0xb97bb0)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/user.go:301 +0x2bf
+github.com/GhvstCode/Blog-Api/controllers.GetPosts(0xbac8e0, 0xc0002dc0e0, 0xc0002d6600)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/user.go:70 +0x9f
+net/http.HandlerFunc.ServeHTTP(0xa64fe8, 0xbac8e0, 0xc0002dc0e0, 0xc0002d6600)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbac8e0, 0xc0002dc0e0, 0xc0002d6500)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc000282900, 0xbac8e0, 0xc0002dc0e0, 0xc0002d6500)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc000208180, 0xbac8e0, 0xc0002dc0e0, 0xc0002d6300)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00024a000, 0xbac8e0, 0xc0002dc0e0, 0xc0002d6300)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc00010f680, 0xbada20, 0xc00029c280)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/19 21:29:48 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 22:26:55 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 22:26:55 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 22:26:55 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 22:30:48 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 22:31:03 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 22:31:03 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 22:31:03 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 22:32:39 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 22:32:50 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 22:32:50 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 22:32:50 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 22:33:37 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 22:33:49 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 22:33:49 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 22:33:49 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 22:34:37 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 23:55:05 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 23:55:05 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 23:55:05 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 23:58:45 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 23:59:47 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 23:59:47 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 23:59:47 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 23:59:53 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 00:00:35 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 00:00:35 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 00:00:35 main.go:52: Server is up on port :8080
+ERROR: 2020/07/20 00:00:43 user.go:313: cannot Decode to nil value
+INFO: 2020/07/20 00:01:47 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 00:02:17 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 00:02:17 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 00:02:17 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 00:03:56 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
