@@ -34,7 +34,7 @@ func handleRequest(){
 	//b.HandleFunc("/{id}", updateArticle).Methods("PUT")
 	//b.HandleFunc("/{id}", deleteArticle).Methods("DELETE")
 	//b.HandleFunc("/{id}", returnSingleArticle)
-	//b.HandleFunc("/{id}subscribe", returnSingleArticle)
+	//b.HandleFunc("/{id}/subscribe", returnSingleArticle)
 
 	//log.Fatal(http.ListenAndServe(":8080", r))
 	//l := log.New(os.Stdout, " product-api", log.LstdFlags)

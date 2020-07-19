@@ -1,2 +1,62 @@
 package models
 
+import (
+	"context"
+	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	"github.com/GhvstCode/Blog-Api/utils"
+	l "github.com/GhvstCode/Blog-Api/utils/logger"
+)
+
+//We want to check before we show any article
+//if the article is published
+//if the article paid, if it is and the person reading it is not the Owner, or has this article ID in its Subscription array then disallow from reading the article.
+type BlogModel struct {
+	 ID        primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
+	 Title     string 			  `bson:"title" json:"title, omitempty"`//Ensure title is not empty or greater than 150 characters
+	 Content   string 		      `bson:"content" json:"content, omitempty"`//Ensure content is not empty
+	 Author    string			   `bson:"name" json:"name, omitempty"`
+	 OwnerId     primitive.ObjectID `bson:"ownerId, omitempty" json:"ownerId, omitempty"`
+	 Published bool					`bson:"published" json:"published, omitempty"`
+	 Paid      bool					`bson:"Paid" json:"Paid, omitempty"`
+	 Price     float64				`bson:"price" json:"price, omitempty"`
+}
+
+func Validate(b *BlogModel) *utils.Data{
+	if len(b.Title) >= 150 || len(b.Title) == 0 {
+		return utils.Response(false,"Title Must be less than 150 characters", http.StatusBadRequest)
+	}
+
+	if len(b.Content) == 0 {
+		return utils.Response(false,"Content must not be empty", http.StatusBadRequest)
+	}
+
+	if len(b.Author) == 0 {
+		return utils.Response(false,"Please fill in the author field", http.StatusBadRequest)
+	}
+
+	return utils.Response(true,"Validated", http.StatusOK)
+}
+
+func (b *BlogModel)Create() *utils.Data {
+	resp := Validate(b)
+	ok := resp.Result; if !ok {
+		return resp
+	}
+
+	//res, err := User.InsertOne(context.TODO(), &UserModel {
+	//	ID:           primitive.NewObjectID(),
+	//	Name:          u.Name,
+	//	Email:         u.Email,
+	//	Subscriptions: u.Subscriptions,
+	//	Password:      u.Password,
+	//})
+
+	res, err := User.InsertOne(context.TODO(), &BlogModel{} )
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An error occurred! Unable to create Post", http.StatusInternalServerError)
+	}
+}

@@ -34,6 +34,6 @@ func init() {
 		l.ErrorLogger.Fatal(err)
 	}
 
-	//Blog := client.Database("Blog-Api").Collection("blog")
+	Blog := client.Database("Blog-Api").Collection("blog")
 	User = client.Database("Blog-Api").Collection("user")
 }
