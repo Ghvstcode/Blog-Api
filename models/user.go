@@ -57,7 +57,7 @@ func Hash(password string) ([]byte, error) {
 
 func genAuthToken(id string)(string, error){
 	t := &Token{
-		UserId: id + "_" + time.StampNano,
+		UserId: id + "_" + time.StampMicro,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 		},

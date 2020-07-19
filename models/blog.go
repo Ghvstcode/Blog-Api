@@ -24,6 +24,17 @@ type BlogModel struct {
 	 Price     float64				`bson:"price" json:"price, omitempty"`
 }
 
+type ReBlogModel struct {
+	ID        string   			   `json:"id, omitempty"`
+	Title     string 			   `json:"title, omitempty"`
+	Content   string 		       `json:"content, omitempty"`
+	Author    string			   `json:"name, omitempty"`
+	OwnerId   string 				`json:"ownerId, omitempty"`
+	Published bool					`json:"published, omitempty"`
+	Paid      bool					`json:"Paid, omitempty"`
+	Price     float64				`json:"price, omitempty"`
+}
+
 func Validate(b *BlogModel) *utils.Data{
 	if len(b.Title) >= 150 || len(b.Title) == 0 {
 		return utils.Response(false,"Title Must be less than 150 characters", http.StatusBadRequest)
@@ -40,23 +51,51 @@ func Validate(b *BlogModel) *utils.Data{
 	return utils.Response(true,"Validated", http.StatusOK)
 }
 
-func (b *BlogModel)Create() *utils.Data {
+func (b *BlogModel)Create(Owner string) *utils.Data {
 	resp := Validate(b)
 	ok := resp.Result; if !ok {
 		return resp
 	}
 
-	//res, err := User.InsertOne(context.TODO(), &UserModel {
-	//	ID:           primitive.NewObjectID(),
-	//	Name:          u.Name,
-	//	Email:         u.Email,
-	//	Subscriptions: u.Subscriptions,
-	//	Password:      u.Password,
-	//})
+	Ownid, err := primitive.ObjectIDFromHex(Owner)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
 
-	res, err := User.InsertOne(context.TODO(), &BlogModel{} )
+	res, err := User.InsertOne(context.TODO(), &BlogModel{
+		ID:        primitive.NewObjectID(),
+		Title:     b.Title,
+		Content:   b.Content,
+		Author:    b.Author,
+		OwnerId:   Ownid,
+		Published: b.Published,
+		Paid:      b.Paid,
+		Price:     b.Price,
+	})
+
 	if err != nil {
 		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An error occurred! Unable to create Post", http.StatusInternalServerError)
 	}
+
+	var UID string
+	if oid, ok := res.InsertedID.(primitive.ObjectID); ok {
+		UID = oid.Hex()
+	}
+
+	r := &ReBlogModel{
+		ID:        UID,
+		Title:     b.Title,
+		Content:   b.Content,
+		Author:    b.Author,
+		OwnerId:   Owner,
+		Published: b.Published,
+		Paid:      b.Paid,
+		Price:     b.Price,
+	}
+
+	response := utils.Response(true, "created", http.StatusCreated)
+	response.Data = [1]*ReBlogModel{r}
+	return response
 }
