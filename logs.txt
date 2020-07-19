@@ -10,3 +10,74 @@ INFO: 2020/07/17 20:41:11 Db.go:18: Connecting to DB...
 WARNING: 2020/07/17 20:41:11 Db.go:23: Unable to connect to load connection URI from env file,connecting to local db!
 INFO: 2020/07/17 20:41:11 main.go:50: Server is up on port :8080
 INFO: 2020/07/17 20:41:24 main.go:62: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 19:10:51 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 19:10:51 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 19:10:51 main.go:50: Server is up on port :8080
+2020/07/19 19:11:17 http: panic serving [::1]:58788: interface conversion: interface {} is nil, not string
+goroutine 27 [running]:
+net/http.(*conn).serve.func1(0xc000190320)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b33c0, 0xc00018eae0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/controllers.NewPost(0xbaa220, 0xc0001f6000, 0xc0001f0300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:12 +0x254
+net/http.HandlerFunc.ServeHTTP(0xa62c80, 0xbaa220, 0xc0001f6000, 0xc0001f0300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc00014a240, 0xbaa220, 0xc0001f6000, 0xc0001f0100)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00016a000, 0xbaa220, 0xc0001f6000, 0xc0001f0100)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc000190320, 0xbab360, 0xc00006a900)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+2020/07/19 19:11:20 http: panic serving [::1]:58792: interface conversion: interface {} is nil, not string
+goroutine 28 [running]:
+net/http.(*conn).serve.func1(0xc0001903c0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b33c0, 0xc00014cbd0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/controllers.NewPost(0xbaa220, 0xc00016a0e0, 0xc000170300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:12 +0x254
+net/http.HandlerFunc.ServeHTTP(0xa62c80, 0xbaa220, 0xc00016a0e0, 0xc000170300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc00014a240, 0xbaa220, 0xc00016a0e0, 0xc000170100)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00016a000, 0xbaa220, 0xc00016a0e0, 0xc000170100)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0001903c0, 0xbab360, 0xc00006a9c0)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+2020/07/19 19:11:27 http: panic serving [::1]:58796: interface conversion: interface {} is nil, not string
+goroutine 37 [running]:
+net/http.(*conn).serve.func1(0xc0002500a0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b33c0, 0xc00018ed80)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/controllers.NewPost(0xbaa220, 0xc0001f60e0, 0xc0001f0600)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:12 +0x254
+net/http.HandlerFunc.ServeHTTP(0xa62c80, 0xbaa220, 0xc0001f60e0, 0xc0001f0600)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc00014a240, 0xbaa220, 0xc0001f60e0, 0xc00025a100)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc00016a000, 0xbaa220, 0xc0001f60e0, 0xc00025a100)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002500a0, 0xbab360, 0xc000212180)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/19 19:57:19 main.go:62: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:00:57 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:00:57 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:00:57 main.go:52: Server is up on port :8080
+ERROR: 2020/07/19 20:01:42 user.go:178: crypto/bcrypt: hashedPassword is not the hash of the given password
+INFO: 2020/07/19 20:11:27 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:12:32 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:12:32 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:12:32 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 20:14:13 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/19 20:14:21 Db.go:19: Connecting to DB...
+WARNING: 2020/07/19 20:14:21 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/19 20:14:21 main.go:52: Server is up on port :8080
+INFO: 2020/07/19 20:17:15 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt

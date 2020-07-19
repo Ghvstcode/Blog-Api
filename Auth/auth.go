@@ -1,8 +1,8 @@
 package Auth
 
 import (
+	"context"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -36,11 +36,22 @@ var Jwt = func(next http.Handler) http.Handler {
 			return
 		}
 
-		tokenPart := tArray[1] //Grab the token part, what we are truly interested in
+		tokenPart := tArray[1]
 		tk := &models.Token{}
 
 		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
 			return []byte("os.Getenv"), nil
 		})
+
+		if err != nil || !token.Valid{ //Malformed token, returns with http code 403 as usual
+			utils.Response(false, "Malformed authentication token", http.StatusBadRequest).Send(w)
+			return
+		}
+		i := strings.Split(tk.UserId, "_")
+		UserID := i[0]
+		//fmt.Print("This is the Users ID: ", UserID)
+		ctx := context.WithValue(r.Context(), "user", UserID)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
 	})
 }

@@ -9,6 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/GhvstCode/Blog-Api/Auth"
+
 	"github.com/GhvstCode/Blog-Api/controllers"
 	_ "github.com/GhvstCode/Blog-Api/models"
 	l "github.com/GhvstCode/Blog-Api/utils/logger"
@@ -21,16 +23,16 @@ func main(){
 func handleRequest(){
 	r := mux.NewRouter().StrictSlash(true)
 	u := r.PathPrefix("/api/user").Subrouter()
-	//b := r.PathPrefix("/blog").Subrouter()
+	b := r.PathPrefix("/api/blog").Subrouter()
 
-
+	r.Use(Auth.Jwt)
 	u.HandleFunc("/new", controllers.NewUser).Methods(http.MethodPost)
 	u.HandleFunc("/login", controllers.Login).Methods(http.MethodPost)
 	r.HandleFunc("/api/resetPassword", controllers.ResetPassword).Methods(http.MethodPost)
 	r.HandleFunc("/api/recoverPassword/{id}/{t}", controllers.RecoverPassword)
-	//
-	//b.HandleFunc("/", returnAllArticles)
-	//b.HandleFunc("/new", createNewArticle).Methods("POST")
+	u.HandleFunc("/", controllers.GetPosts).Methods(http.MethodGet)
+
+	b.HandleFunc("/new", controllers.NewPost).Methods("POST")
 	//b.HandleFunc("/{id}", updateArticle).Methods("PUT")
 	//b.HandleFunc("/{id}", deleteArticle).Methods("DELETE")
 	//b.HandleFunc("/{id}", returnSingleArticle)

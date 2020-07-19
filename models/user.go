@@ -17,7 +17,7 @@ import (
 )
 
 type Token struct {
-	UserId interface{}
+	UserId string
 	jwt.StandardClaims
 }
 
@@ -282,3 +282,28 @@ func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data{
 	return response
 }
 
+func GetPosts(id string) *utils.Data {
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "Invalid ID" , http.StatusInternalServerError)
+	}
+
+	post := &BlogModel{}
+
+	cursor, err := Blog.Find(context.TODO(), bson.M{"owner": oid})
+
+	if cursor == nil {
+		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
+	}
+
+	if err = cursor.All(context.TODO(), &post); err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "Unable to  Fetch post" , http.StatusBadRequest)
+	}
+
+	response := utils.Response(true, "Logged In", http.StatusOK)
+	response.Data = []*BlogModel{post}
+	return response
+}

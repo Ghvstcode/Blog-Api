@@ -17,7 +17,7 @@ type BlogModel struct {
 	 ID        primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
 	 Title     string 			  `bson:"title" json:"title, omitempty"`//Ensure title is not empty or greater than 150 characters
 	 Content   string 		      `bson:"content" json:"content, omitempty"`//Ensure content is not empty
-	 Author    string			   `bson:"name" json:"name, omitempty"`
+	 Author    string			   `bson:"author" json:"author, omitempty"`
 	 OwnerId     primitive.ObjectID `bson:"ownerId, omitempty" json:"ownerId, omitempty"`
 	 Published bool					`bson:"published" json:"published, omitempty"`
 	 Paid      bool					`bson:"Paid" json:"Paid, omitempty"`
@@ -37,7 +37,7 @@ type ReBlogModel struct {
 
 func Validate(b *BlogModel) *utils.Data{
 	if len(b.Title) >= 150 || len(b.Title) == 0 {
-		return utils.Response(false,"Title Must be less than 150 characters", http.StatusBadRequest)
+		return utils.Response(false,"Title Must be greater than zero & less than 150 characters", http.StatusBadRequest)
 	}
 
 	if len(b.Content) == 0 {
@@ -63,7 +63,7 @@ func (b *BlogModel)Create(Owner string) *utils.Data {
 		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
 	}
 
-	res, err := User.InsertOne(context.TODO(), &BlogModel{
+	res, err := Blog.InsertOne(context.TODO(), &BlogModel{
 		ID:        primitive.NewObjectID(),
 		Title:     b.Title,
 		Content:   b.Content,

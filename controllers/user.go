@@ -64,3 +64,9 @@ func RecoverPassword(w http.ResponseWriter, r *http.Request){
 	res := models.RecoverPassword(user, id, t)
 	res.Send(w)
 }
+
+func GetPosts(w http.ResponseWriter, r *http.Request){
+	ID := r.Context().Value("user").(string)
+	resp := models.GetPosts(ID)
+	resp.Send(w)
+}

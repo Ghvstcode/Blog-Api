@@ -12,6 +12,7 @@ import (
 )
 
 var User *mongo.Collection
+var Blog *mongo.Collection
 var ctx = context.TODO()
 
 func init() {
@@ -34,6 +35,6 @@ func init() {
 		l.ErrorLogger.Fatal(err)
 	}
 
-	Blog := client.Database("Blog-Api").Collection("blog")
+	Blog = client.Database("Blog-Api").Collection("blog")
 	User = client.Database("Blog-Api").Collection("user")
 }
