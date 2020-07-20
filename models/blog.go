@@ -2,9 +2,12 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/GhvstCode/Blog-Api/utils"
 	l "github.com/GhvstCode/Blog-Api/utils/logger"
@@ -28,7 +31,7 @@ type ReBlogModel struct {
 	ID        string   			   `json:"id, omitempty"`
 	Title     string 			   `json:"title, omitempty"`
 	Content   string 		       `json:"content, omitempty"`
-	Author    string			   `json:"name, omitempty"`
+	Author    string			   `json:"author, omitempty"`
 	OwnerId   string 				`json:"ownerId, omitempty"`
 	Published bool					`json:"published, omitempty"`
 	Paid      bool					`json:"Paid, omitempty"`
@@ -100,4 +103,46 @@ func (b *BlogModel)Create(Owner string) *utils.Data {
 	return response
 }
 
+func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
+	//resp := Validate(b)
+	//ok := resp.Result; if !ok {
+	//	return resp
+	//}
 
+	postId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+
+	filter := bson.D{{"_id", postId}}
+	update := bson.M{"$set": b}
+
+	var bm  ReBlogModel
+	var cm ReBlogModel
+	err = Blog.FindOneAndUpdate(context.TODO(), filter, update).Decode(&bm)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			l.ErrorLogger.Print(err)
+			return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+		}
+		l.ErrorLogger.Print(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+
+	err = Blog.FindOne(context.TODO(), filter).Decode(&cm)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			l.ErrorLogger.Print(err)
+			return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+		}
+		l.ErrorLogger.Print(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+
+	response := utils.Response(true, "Updated", http.StatusCreated)
+	response.Data = [1]*ReBlogModel{&cm}
+	fmt.Print(&cm)
+	return response
+
+}

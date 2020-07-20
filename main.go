@@ -33,7 +33,7 @@ func handleRequest(){
 	u.HandleFunc("/posts", controllers.GetPosts).Methods(http.MethodGet)
 
 	b.HandleFunc("/new", controllers.NewPost).Methods("POST")
-	//b.HandleFunc("/{id}", updateArticle).Methods("PUT")
+	b.HandleFunc("/{id}", controllers.UpdatePost).Methods("PUT")
 	//b.HandleFunc("/{id}", deleteArticle).Methods("DELETE")
 	//b.HandleFunc("/{id}", returnSingleArticle)
 	//b.HandleFunc("/{id}/subscribe", returnSingleArticle)

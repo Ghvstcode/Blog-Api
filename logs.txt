@@ -246,3 +246,47 @@ INFO: 2020/07/20 00:02:17 Db.go:19: Connecting to DB...
 WARNING: 2020/07/20 00:02:17 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
 INFO: 2020/07/20 00:02:17 main.go:52: Server is up on port :8080
 INFO: 2020/07/20 00:03:56 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 14:16:41 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 14:16:41 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 14:16:41 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 14:19:29 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 14:21:17 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 14:21:17 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 14:21:18 main.go:52: Server is up on port :8080
+2020/07/20 14:25:01 update document must contain key beginning with '$'
+INFO: 2020/07/20 19:23:26 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 19:23:26 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 19:23:26 main.go:52: Server is up on port :8080
+2020/07/20 19:24:31 (ImmutableField) Performing an update on the path '_id' would modify the immutable field '_id'
+INFO: 2020/07/20 22:02:13 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:02:13 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:02:13 main.go:52: Server is up on port :8080
+2020/07/20 22:02:51 cannot Decode to nil value
+INFO: 2020/07/20 22:04:34 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:04:34 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:04:34 main.go:52: Server is up on port :8080
+2020/07/20 22:04:40 cannot Decode to nil value
+INFO: 2020/07/20 22:05:46 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:05:46 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:05:46 main.go:52: Server is up on port :8080
+ERROR: 2020/07/20 22:05:53 blog.go:140: cannot Decode to nil value
+INFO: 2020/07/20 22:09:08 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:09:08 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:09:08 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 22:11:40 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 22:12:59 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:12:59 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:12:59 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 22:15:04 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 22:40:15 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:40:15 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:40:15 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 22:44:08 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 22:44:17 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:44:17 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:44:17 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 22:45:02 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/20 22:45:10 Db.go:19: Connecting to DB...
+WARNING: 2020/07/20 22:45:10 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/20 22:45:11 main.go:52: Server is up on port :8080
+INFO: 2020/07/20 22:46:14 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
