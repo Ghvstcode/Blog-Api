@@ -22,9 +22,9 @@ type BlogModel struct {
 	 Content   string 		      `bson:"content" json:"content, omitempty"`//Ensure content is not empty
 	 Author    string			   `bson:"author" json:"author, omitempty"`
 	 OwnerId     primitive.ObjectID `bson:"ownerId, omitempty" json:"ownerId, omitempty"`
-	 Published bool					`bson:"published" json:"published, omitempty"`
-	 Paid      bool					`bson:"Paid" json:"Paid, omitempty"`
-	 Price     float64				`bson:"price" json:"price, omitempty"`
+	 Published *bool					`bson:"published" json:"published, omitempty"`
+	 Paid      *bool					`bson:"Paid" json:"Paid, omitempty"`
+	 Price     int				`bson:"price" json:"price, omitempty"`
 }
 
 type ReBlogModel struct {
@@ -33,9 +33,9 @@ type ReBlogModel struct {
 	Content   string 		       `json:"content, omitempty"`
 	Author    string			   `json:"author, omitempty"`
 	OwnerId   string 				`json:"ownerId, omitempty"`
-	Published bool					`json:"published, omitempty"`
-	Paid      bool					`json:"Paid, omitempty"`
-	Price     float64				`json:"price, omitempty"`
+	Published *bool					`json:"published, omitempty"`
+	Paid      *bool					`json:"Paid, omitempty"`
+	Price     int				`json:"price, omitempty"`
 }
 
 func Validate(b *BlogModel) *utils.Data{
@@ -117,9 +117,10 @@ func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
 
 	filter := bson.D{{"_id", postId}}
 	update := bson.M{"$set": b}
+	//opts := options.FindOneAndUpdate().new(true)
 
 	var bm  ReBlogModel
-	var cm ReBlogModel
+	var c BlogModel
 	err = Blog.FindOneAndUpdate(context.TODO(), filter, update).Decode(&bm)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -130,7 +131,7 @@ func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
 		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
 	}
 
-	err = Blog.FindOne(context.TODO(), filter).Decode(&cm)
+	err = Blog.FindOne(context.TODO(), filter).Decode(&c)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			l.ErrorLogger.Print(err)
@@ -141,8 +142,8 @@ func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
 	}
 
 	response := utils.Response(true, "Updated", http.StatusCreated)
-	response.Data = [1]*ReBlogModel{&cm}
-	fmt.Print(&cm)
+	fmt.Print(&c)
+	//response.Data = [1]*ReBlogModel{&c}
 	return response
 
 }
