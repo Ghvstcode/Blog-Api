@@ -31,11 +31,12 @@ func handleRequest(){
 	r.HandleFunc("/api/resetPassword", controllers.ResetPassword).Methods(http.MethodPost)
 	r.HandleFunc("/api/recoverPassword/{id}/{t}", controllers.RecoverPassword)
 	u.HandleFunc("/posts", controllers.GetPosts).Methods(http.MethodGet)
+	//u.HandleFunc("/feed", controllers.GetPosts).Methods(http.MethodGet)This includes a list of all articles/A users subscriptions.
 
 	b.HandleFunc("/new", controllers.NewPost).Methods("POST")
 	b.HandleFunc("/{id}", controllers.UpdatePost).Methods("PUT")
-	//b.HandleFunc("/{id}", deleteArticle).Methods("DELETE")
-	//b.HandleFunc("/{id}", returnSingleArticle)
+	b.HandleFunc("/{id}", controllers.DeletePost).Methods("DELETE")
+	b.HandleFunc("/{id}", controllers.GetPosts).Methods(http.MethodGet)
 	//b.HandleFunc("/{id}/subscribe", returnSingleArticle)
 
 	//log.Fatal(http.ListenAndServe(":8080", r))
@@ -67,4 +68,3 @@ func handleRequest(){
 	_ = s.Shutdown(tc)
 
 }
-///home/tobax/mongodb/bin/mongod --dbpath=/home/tobax/mongodb-data

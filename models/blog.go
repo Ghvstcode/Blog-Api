@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,6 +35,31 @@ type ReBlogModel struct {
 	Published *bool					`json:"published, omitempty"`
 	Paid      *bool					`json:"Paid, omitempty"`
 	Price     int				`json:"price, omitempty"`
+}
+
+type UpdateBlogModel struct {
+	Title     string 			   `json:"title, omitempty"`
+	Content   string 		       `json:"content, omitempty"`
+	Published *bool					`json:"published, omitempty"`
+	Paid      *bool					`json:"Paid, omitempty"`
+	Price     int				`json:"price, omitempty"`
+}
+
+func getID (id string) (primitive.ObjectID, error){
+	postId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return postId, err
+	}
+
+	return postId, nil
+}
+func Find(slice []string, val string) (int, bool) {
+	for i, item := range slice {
+		if item == val {
+			return i, true
+		}
+	}
+	return -1, false
 }
 
 func Validate(b *BlogModel) *utils.Data{
@@ -103,12 +127,8 @@ func (b *BlogModel)Create(Owner string) *utils.Data {
 	return response
 }
 
-func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
-	//resp := Validate(b)
-	//ok := resp.Result; if !ok {
-	//	return resp
-	//}
-
+func (b *UpdateBlogModel) UpdatePost(id string) *utils.Data{
+//To-Do Validate Update.
 	postId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		l.ErrorLogger.Println(err)
@@ -141,9 +161,84 @@ func (b *ReBlogModel) UpdatePost(id string) *utils.Data{
 		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
 	}
 
+	res := &ReBlogModel{
+		ID:       c.ID.Hex(),
+		Title:     c.Title,
+		Content:   c.Content,
+		Author:    c.Author,
+		OwnerId:   c.OwnerId.Hex(),
+		Published: c.Published,
+		Paid:      c.Paid,
+		Price:     c.Price,
+	}
 	response := utils.Response(true, "Updated", http.StatusCreated)
-	fmt.Print(&c)
-	//response.Data = [1]*ReBlogModel{&c}
+	response.Data = [1]*ReBlogModel{res}
 	return response
+}
 
+func DeletePost(id string) *utils.Data{
+	postId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Delete Post" , http.StatusInternalServerError)
+	}
+
+	filter := bson.D{{"_id", postId}}
+	_, err = Blog.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Delete Post" , http.StatusInternalServerError)
+	}
+
+	response := utils.Response(true, "Deleted", http.StatusOK)
+	return response
+}
+
+func (b *BlogModel)GetPost(id string, UserID string)  *utils.Data{
+	postId, err := getID(id)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
+	}
+
+	userId, err := getID(id)
+	if err != nil {
+		l.ErrorLogger.Println(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+
+	//filter := bson.D{{"_id", postId}}
+	err = Blog.FindOne(context.TODO(), bson.D{{"_id", postId}}).Decode(&b)
+	if err != nil {
+		l.ErrorLogger.Print(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+
+	var c *UserModel
+	err = User.FindOne(context.TODO(), bson.D{{"_id", userId}}).Decode(&c)
+	if err != nil {
+		l.ErrorLogger.Print(err)
+		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+	}
+	_, returnBool := Find(c.Subscriptions, id)
+	if !returnBool {
+		return utils.Response(false, "Post Not found" , http.StatusNotFound)
+	}
+	if !*b.Published {
+		return utils.Response(false, "Post Not found" , http.StatusNotFound)
+	}
+	res := &ReBlogModel{
+		ID:       b.ID.Hex(),
+		Title:     b.Title,
+		Content:   b.Content,
+		Author:    b.Author,
+		OwnerId:   b.OwnerId.Hex(),
+		Published: b.Published,
+		Paid:      b.Paid,
+		Price:     b.Price,
+	}
+
+	response := utils.Response(true, "Updated", http.StatusCreated)
+	response.Data = [1]*ReBlogModel{res}
+	return response
 }

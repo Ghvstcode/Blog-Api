@@ -29,7 +29,7 @@ func UpdatePost (w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	id := vars["id"]
 	//Content goes  here!
-	post := &models.ReBlogModel{}
+	post := &models.UpdateBlogModel{}
 
 	err := json.NewDecoder(r.Body).Decode(post)
 	fmt.Print(post)
@@ -38,5 +38,13 @@ func UpdatePost (w http.ResponseWriter, r *http.Request){
 	}
 
 	resp := post.UpdatePost(id)
+	resp.Send(w)
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request){
+	userID := r.Context().Value("user").(string)
+	vars := mux.Vars(r)
+	id := vars["id"]
+	resp :=models.DeletePost(id)
 	resp.Send(w)
 }

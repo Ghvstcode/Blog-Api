@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -27,7 +26,7 @@ type UserModel struct {
 	Name          string `bson:"name" json:"name"`
 	Email         string `bson:"email" json:"email"`
 	Password      string `bson:"password" json:"password"`
-	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
+	Subscriptions []string  `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
 type ReUserModel struct {
@@ -35,7 +34,7 @@ type ReUserModel struct {
 	Name          string `bson:"name" json:"name"`
 	Email         string `bson:"email" json:"email"`
 	Password      string `bson:"password" json:"password"`
-	Subscriptions []Sub  `bson:"sub, omitempty" json:"sub, omitempty"`
+	Subscriptions []string  `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
 type RecPassword struct {
@@ -47,9 +46,9 @@ type ResPassword struct {
 	Email         string `json:"email"`
 }
 
-type Sub struct {
-	SubID string `bson:"subID" json:"subID"`
-}
+//type Sub struct {
+//	SubID string `bson:"subID" json:"subID"`
+//}
 
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -181,7 +180,6 @@ func Login (email string,  password string) *utils.Data {
 	user.Password = ""
 	//user.ID = user._Id.Hex()
 	t, _ := genAuthToken(user.ID.Hex())//We would eventually check for the error & Log it later bla bla bla
-	fmt.Print("LoginTok", user.ID.Hex())
 	response := utils.Response(true, "Logged In", http.StatusOK)
 	response.Token = t
 	response.Data = [1]*UserModel{user}
@@ -319,7 +317,7 @@ func GetPosts(id string) *utils.Data {
 		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
 	}
 
-	response := utils.Response(true, "Logged In", http.StatusOK)
+	response := utils.Response(true, "Success", http.StatusOK)
 	response.Data = posts
 	return response
 }
