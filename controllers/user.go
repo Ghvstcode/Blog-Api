@@ -85,7 +85,3 @@ func ViewLog(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(file)
 	_, _ = w.Write(b)
 }
-
-//func feed(w http.ResponseWriter, r *http.Request){
-//	//var posts []*BlogModel
-//}
