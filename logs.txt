@@ -311,3 +311,124 @@ INFO: 2020/07/21 02:03:10 Db.go:19: Connecting to DB...
 WARNING: 2020/07/21 02:03:10 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
 INFO: 2020/07/21 02:03:11 main.go:53: Server is up on port :8080
 INFO: 2020/07/21 02:16:02 main.go:65: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/21 20:35:43 Db.go:19: Connecting to DB...
+WARNING: 2020/07/21 20:35:43 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/21 20:35:43 main.go:52: Server is up on port :8080
+ERROR: 2020/07/21 20:44:08 blog.go:182: encoding/hex: invalid byte: U+006C 'l'
+ERROR: 2020/07/21 20:46:04 blog.go:215: mongo: no documents in result
+ERROR: 2020/07/21 20:46:08 blog.go:215: mongo: no documents in result
+ERROR: 2020/07/21 20:46:09 blog.go:215: mongo: no documents in result
+ERROR: 2020/07/21 20:46:56 blog.go:215: mongo: no documents in result
+2020/07/21 20:48:19 http: panic serving [::1]:48908: runtime error: invalid memory address or nil pointer dereference
+goroutine 108 [running]:
+net/http.(*conn).serve.func1(0xc0001e0e60)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b2a60, 0xf5cbe0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/models.GetPost(0xc0002ca51e, 0x18, 0xc0002ca5a0, 0x18, 0xc0002a0ce8)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/blog.go:227 +0x70b
+github.com/GhvstCode/Blog-Api/controllers.GetOnePost(0xbaedc0, 0xc0002ce460, 0xc0002ab900)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:56 +0xff
+net/http.HandlerFunc.ServeHTTP(0xa67098, 0xbaedc0, 0xc0002ce460, 0xc0002ab900)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbaedc0, 0xc0002ce460, 0xc0002ab800)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc0002852c0, 0xbaedc0, 0xc0002ce460, 0xc0002ab800)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc0001ca240, 0xbaedc0, 0xc0002ce460, 0xc0002ab600)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc0001ea000, 0xbaedc0, 0xc0002ce460, 0xc0002ab600)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0001e0e60, 0xbafec0, 0xc00006b040)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+2020/07/21 20:48:21 http: panic serving [::1]:48912: runtime error: invalid memory address or nil pointer dereference
+goroutine 139 [running]:
+net/http.(*conn).serve.func1(0xc0002ae0a0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b2a60, 0xf5cbe0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/models.GetPost(0xc0002ca66e, 0x18, 0xc0002ca6f0, 0x18, 0xc0002a1048)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/blog.go:227 +0x70b
+github.com/GhvstCode/Blog-Api/controllers.GetOnePost(0xbaedc0, 0xc0002ce540, 0xc0002abd00)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:56 +0xff
+net/http.HandlerFunc.ServeHTTP(0xa67098, 0xbaedc0, 0xc0002ce540, 0xc0002abd00)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbaedc0, 0xc0002ce540, 0xc0002abc00)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc0002855e0, 0xbaedc0, 0xc0002ce540, 0xc0002abc00)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc0001ca240, 0xbaedc0, 0xc0002ce540, 0xc0002aba00)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc0001ea000, 0xbaedc0, 0xc0002ce540, 0xc0002aba00)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002ae0a0, 0xbafec0, 0xc000296a80)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/21 20:49:26 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/21 20:50:48 Db.go:19: Connecting to DB...
+WARNING: 2020/07/21 20:50:48 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/21 20:50:48 main.go:52: Server is up on port :8080
+INFO: 2020/07/21 20:51:10 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/21 21:04:06 Db.go:19: Connecting to DB...
+WARNING: 2020/07/21 21:04:06 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/21 21:04:06 main.go:52: Server is up on port :8080
+2020/07/21 21:04:11 http: panic serving [::1]:48928: runtime error: invalid memory address or nil pointer dereference
+goroutine 51 [running]:
+net/http.(*conn).serve.func1(0xc0002880a0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b2a80, 0xf5cbe0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/models.GetPost(0xc00025600e, 0x18, 0xc000256090, 0x18, 0xc00026e088)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/blog.go:231 +0x70b
+github.com/GhvstCode/Blog-Api/controllers.GetOnePost(0xbaede0, 0xc00025e000, 0xc000254300)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:56 +0xff
+net/http.HandlerFunc.ServeHTTP(0xa670b8, 0xbaede0, 0xc00025e000, 0xc000254300)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbaede0, 0xc00025e000, 0xc000254200)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc00021a180, 0xbaede0, 0xc00025e000, 0xc000254200)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc0001c8240, 0xbaede0, 0xc00025e000, 0xc000254000)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc0001e8000, 0xbaede0, 0xc00025e000, 0xc000254000)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002880a0, 0xbafee0, 0xc000234140)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+2020/07/21 21:04:12 http: panic serving [::1]:48932: runtime error: invalid memory address or nil pointer dereference
+goroutine 37 [running]:
+net/http.(*conn).serve.func1(0xc0002280a0)
+	/usr/local/go/src/net/http/server.go:1772 +0x139
+panic(0x9b2a80, 0xf5cbe0)
+	/usr/local/go/src/runtime/panic.go:975 +0x3e3
+github.com/GhvstCode/Blog-Api/models.GetPost(0xc00002642e, 0x18, 0xc0000264b0, 0x18, 0xc0001f6088)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/models/blog.go:231 +0x70b
+github.com/GhvstCode/Blog-Api/controllers.GetOnePost(0xbaede0, 0xc0001e80e0, 0xc0001f8200)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/controllers/blog.go:56 +0xff
+net/http.HandlerFunc.ServeHTTP(0xa670b8, 0xbaede0, 0xc0001e80e0, 0xc0001f8200)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/GhvstCode/Blog-Api/Auth.glob..func1.1(0xbaede0, 0xc0001e80e0, 0xc0001f8100)
+	/home/tobax/code/go/src/github.com/GhvstCode/Blog-Api/Auth/auth.go:55 +0x4e7
+net/http.HandlerFunc.ServeHTTP(0xc00000f760, 0xbaede0, 0xc0001e80e0, 0xc0001f8100)
+	/usr/local/go/src/net/http/server.go:2012 +0x44
+github.com/gorilla/mux.(*Router).ServeHTTP(0xc0001c8240, 0xbaede0, 0xc0001e80e0, 0xc000254500)
+	/home/tobax/code/go/pkg/mod/github.com/gorilla/mux@v1.7.4/mux.go:210 +0xe2
+net/http.serverHandler.ServeHTTP(0xc0001e8000, 0xbaede0, 0xc0001e80e0, 0xc000254500)
+	/usr/local/go/src/net/http/server.go:2807 +0xa3
+net/http.(*conn).serve(0xc0002280a0, 0xbafee0, 0xc000234440)
+	/usr/local/go/src/net/http/server.go:1895 +0x86c
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2933 +0x35c
+INFO: 2020/07/21 21:07:27 main.go:64: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/23 12:29:24 Db.go:19: Connecting to DB...
+WARNING: 2020/07/23 12:29:24 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/23 12:29:24 main.go:53: Server is up on port :8080
+INFO: 2020/07/23 12:30:02 main.go:65: Received terminate, graceful shutdown! Signal:  interrupt
+INFO: 2020/07/23 12:30:53 Db.go:19: Connecting to DB...
+WARNING: 2020/07/23 12:30:53 Db.go:24: Unable to connect to load connection URI from env file,connecting to local db!
+INFO: 2020/07/23 12:30:53 main.go:53: Server is up on port :8080
+INFO: 2020/07/23 12:31:30 main.go:65: Received terminate, graceful shutdown! Signal:  interrupt

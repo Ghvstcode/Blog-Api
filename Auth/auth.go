@@ -13,7 +13,7 @@ import (
 
 var Jwt = func(next http.Handler) http.Handler {
 	return  http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
-		openRoutes := []string{"/api/user/new", "/api/user/login", "api/resetPassword", "api/recoverPassword"}
+		openRoutes := []string{"/api/user/new", "/api/user/login", "api/resetPassword", "api/recoverPassword", "/logs"}
 		requestPath := r.URL.Path
 
 		for _, value := range openRoutes {

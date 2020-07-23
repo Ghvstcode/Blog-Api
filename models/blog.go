@@ -79,6 +79,7 @@ func Validate(b *BlogModel) *utils.Data{
 }
 
 func (b *BlogModel)Create(Owner string) *utils.Data {
+	//Check if a user already has a post with the title they are trying to create/update to avoid possible duplicates
 	resp := Validate(b)
 	ok := resp.Result; if !ok {
 		return resp
@@ -194,37 +195,40 @@ func DeletePost(id string) *utils.Data{
 	return response
 }
 
-func (b *BlogModel)GetPost(id string, UserID string)  *utils.Data{
+func GetPost(id string, UserID string)  *utils.Data{
+	var c *UserModel
+	var b * BlogModel
 	postId, err := getID(id)
 	if err != nil {
 		l.ErrorLogger.Println(err)
 		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
 	}
 
-	userId, err := getID(id)
+	userId, err := getID(UserID)
 	if err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
 	}
 
 	//filter := bson.D{{"_id", postId}}
 	err = Blog.FindOne(context.TODO(), bson.D{{"_id", postId}}).Decode(&b)
 	if err != nil {
 		l.ErrorLogger.Print(err)
-		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
 	}
 
-	var c *UserModel
+
 	err = User.FindOne(context.TODO(), bson.D{{"_id", userId}}).Decode(&c)
 	if err != nil {
 		l.ErrorLogger.Print(err)
-		return utils.Response(false, "An Error occurred, Unable to Create Post" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
 	}
 	_, returnBool := Find(c.Subscriptions, id)
-	if !returnBool {
-		return utils.Response(false, "Post Not found" , http.StatusNotFound)
-	}
-	if !*b.Published {
+
+	//if !*b.Published && b.OwnerId == userId || !returnBool{
+	//	return utils.Response(false, "Post Not found" , http.StatusNotFound)
+	//}
+	if !*b.Published && !returnBool || b.OwnerId == userId{
 		return utils.Response(false, "Post Not found" , http.StatusNotFound)
 	}
 	res := &ReBlogModel{

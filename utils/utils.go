@@ -17,7 +17,7 @@ type Data struct {
 	Message string
 	Result bool
 	Data interface{}
-	Token string
+	Token string `json:"Token, omitempty"`
 }
 
 func (data Data) Send(w http.ResponseWriter) interface{} {

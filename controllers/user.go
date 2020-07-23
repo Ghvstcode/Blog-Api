@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 
@@ -69,4 +72,16 @@ func GetPosts(w http.ResponseWriter, r *http.Request){
 	ID := r.Context().Value("user").(string)
 	resp := models.GetPosts(ID)
 	resp.Send(w)
+}
+
+func ViewLog(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("logs.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+
+	b, err := ioutil.ReadAll(file)
+	_, _ = w.Write(b)
 }

@@ -26,6 +26,7 @@ func handleRequest(){
 	b := r.PathPrefix("/api/blog").Subrouter()
 
 	r.Use(Auth.Jwt)
+	r.HandleFunc("/logs", controllers.ViewLog)
 	u.HandleFunc("/new", controllers.NewUser).Methods(http.MethodPost)
 	u.HandleFunc("/login", controllers.Login).Methods(http.MethodPost)
 	r.HandleFunc("/api/resetPassword", controllers.ResetPassword).Methods(http.MethodPost)
@@ -36,11 +37,10 @@ func handleRequest(){
 	b.HandleFunc("/new", controllers.NewPost).Methods("POST")
 	b.HandleFunc("/{id}", controllers.UpdatePost).Methods("PUT")
 	b.HandleFunc("/{id}", controllers.DeletePost).Methods("DELETE")
-	b.HandleFunc("/{id}", controllers.GetPosts).Methods(http.MethodGet)
+	b.HandleFunc("/{id}", controllers.GetOnePost).Methods(http.MethodGet)
 	//b.HandleFunc("/{id}/subscribe", returnSingleArticle)
 
-	//log.Fatal(http.ListenAndServe(":8080", r))
-	//l := log.New(os.Stdout, " product-api", log.LstdFlags)
+
 	s := &http.Server{
 		Addr: ":8080",
 		Handler: r,

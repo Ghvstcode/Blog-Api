@@ -42,9 +42,17 @@ func UpdatePost (w http.ResponseWriter, r *http.Request){
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request){
-	userID := r.Context().Value("user").(string)
 	vars := mux.Vars(r)
 	id := vars["id"]
 	resp :=models.DeletePost(id)
+	resp.Send(w)
+}
+
+
+func GetOnePost(w http.ResponseWriter, r *http.Request){
+	userID := r.Context().Value("user").(string)
+	vars := mux.Vars(r)
+	id := vars["id"]
+	resp :=models.GetPost(id, userID)
 	resp.Send(w)
 }
