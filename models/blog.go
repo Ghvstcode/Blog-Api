@@ -12,9 +12,7 @@ import (
 	l "github.com/GhvstCode/Blog-Api/utils/logger"
 )
 
-//We want to check before we show any article
-//if the article is published
-//if the article paid, if it is and the person reading it is not the Owner, or has this article ID in its Subscription array then disallow from reading the article.
+
 type BlogModel struct {
 	 ID        primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
 	 Title     string 			  `bson:"title" json:"title, omitempty"`//Ensure title is not empty or greater than 150 characters

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Test Hook"
+chmod +x pre-commit
 
 STAGED_GO_FILES=$(git diff --cached --name-only -- '*.go')
 

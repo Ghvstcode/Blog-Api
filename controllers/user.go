@@ -74,7 +74,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request){
 	resp.Send(w)
 }
 
-func ViewLog(w http.ResponseWriter, r *http.Request) {
+func ViewLog(w http.ResponseWriter, _ *http.Request) {
 	file, err := os.Open("logs.txt")
 	if err != nil {
 		log.Fatal(err)
