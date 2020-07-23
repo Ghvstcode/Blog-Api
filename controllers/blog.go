@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -32,7 +31,6 @@ func UpdatePost (w http.ResponseWriter, r *http.Request){
 	post := &models.UpdateBlogModel{}
 
 	err := json.NewDecoder(r.Body).Decode(post)
-	fmt.Print(post)
 	if err != nil {
 		utils.Response(false, "An error occurred, Unable to create post", http.StatusBadRequest)
 	}

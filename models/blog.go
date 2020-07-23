@@ -223,12 +223,16 @@ func GetPost(id string, UserID string)  *utils.Data{
 		l.ErrorLogger.Print(err)
 		return utils.Response(false, "An Error occurred, Unable to Fetch Post" , http.StatusInternalServerError)
 	}
+	//fmt.Print(b.OwnerId)
+	//fmt.Print(userId)
 	_, returnBool := Find(c.Subscriptions, id)
-
+	//if  b.OwnerId == userId{
+	//	return utils.Response(false, "Post Not found" , http.StatusNotFound)
+	//}
 	//if !*b.Published && b.OwnerId == userId || !returnBool{
 	//	return utils.Response(false, "Post Not found" , http.StatusNotFound)
 	//}
-	if !*b.Published && !returnBool || b.OwnerId == userId{
+	if b.Published == nil || !(*b.Published) && !returnBool || !(b.OwnerId == userId){
 		return utils.Response(false, "Post Not found" , http.StatusNotFound)
 	}
 	res := &ReBlogModel{

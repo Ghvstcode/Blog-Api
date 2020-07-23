@@ -321,3 +321,7 @@ func GetPosts(id string) *utils.Data {
 	response.Data = posts
 	return response
 }
+
+//func feed(id string){
+//	//var posts []*BlogModel
+//}
