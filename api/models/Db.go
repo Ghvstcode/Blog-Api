@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	l "github.com/GhvstCode/Blog-Api/utils/logger"
+	l "github.com/GhvstCode/Blog-Api/api/utils/logger"
 )
 
 var User *mongo.Collection
@@ -20,9 +20,10 @@ func init() {
 	envUri, ok := os.LookupEnv("MongoDB_URI")
 
 	Uri := envUri
-	if !ok{
+	if !ok {
 		l.WarningLogger.Println("Unable to connect to load connection URI from env file,connecting to local db!")
-		Uri = "mongodb://localhost:27017"
+		//Uri = "mongodb://localhost:27017"
+		Uri = "mongodb://mongo:27017"
 	}
 	clientOptions := options.Client().ApplyURI(Uri)
 	client, err := mongo.Connect(ctx, clientOptions)

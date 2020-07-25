@@ -9,18 +9,18 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/GhvstCode/Blog-Api/Auth"
+	"github.com/GhvstCode/Blog-Api/api/Auth"
 
-	"github.com/GhvstCode/Blog-Api/controllers"
-	_ "github.com/GhvstCode/Blog-Api/models"
-	l "github.com/GhvstCode/Blog-Api/utils/logger"
+	"github.com/GhvstCode/Blog-Api/api/controllers"
+	_ "github.com/GhvstCode/Blog-Api/api/models"
+	l "github.com/GhvstCode/Blog-Api/api/utils/logger"
 )
 
-func main(){
+func main() {
 	handleRequest()
 }
 
-func handleRequest(){
+func handleRequest() {
 	r := mux.NewRouter().StrictSlash(true)
 	u := r.PathPrefix("/api/user").Subrouter()
 	b := r.PathPrefix("/api/blog").Subrouter()
@@ -40,20 +40,19 @@ func handleRequest(){
 	b.HandleFunc("/{id}", controllers.GetOnePost).Methods(http.MethodGet)
 	//b.HandleFunc("/{id}/subscribe", returnSingleArticle)
 
-
 	s := &http.Server{
-		Addr: ":8080",
-		Handler: r,
-		IdleTimeout: 120*time.Second,
-		ReadTimeout: 1*time.Second,
-		WriteTimeout: 1*time.Second,
+		Addr:         ":8080",
+		Handler:      r,
+		IdleTimeout:  120 * time.Second,
+		ReadTimeout:  1 * time.Second,
+		WriteTimeout: 1 * time.Second,
 	}
 
-	go func () {
-		l.InfoLogger.Println("Server is up on port",s.Addr)
-		err := 	s.ListenAndServe()
+	go func() {
+		l.InfoLogger.Println("Server is up on port", s.Addr)
+		err := s.ListenAndServe()
 		if err != nil {
-			l.ErrorLogger.Fatal("Error starting server on port",s.Addr)
+			l.ErrorLogger.Fatal("Error starting server on port", s.Addr)
 		}
 	}()
 
@@ -61,10 +60,10 @@ func handleRequest(){
 	signal.Notify(sigChan, os.Interrupt)
 	signal.Notify(sigChan, os.Kill)
 
-	sig := <- sigChan
-	l.InfoLogger.Println("Received terminate, graceful shutdown! Signal: ",sig)
+	sig := <-sigChan
+	l.InfoLogger.Println("Received terminate, graceful shutdown! Signal: ", sig)
 
-	tc, _:= context.WithTimeout(context.Background(), 30*time.Second)
+	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	_ = s.Shutdown(tc)
 
 }

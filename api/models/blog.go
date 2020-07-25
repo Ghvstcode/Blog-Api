@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/GhvstCode/Blog-Api/utils"
-	l "github.com/GhvstCode/Blog-Api/utils/logger"
+	"github.com/GhvstCode/Blog-Api/api/utils"
+	l "github.com/GhvstCode/Blog-Api/api/utils/logger"
 )
 
 type BlogModel struct {

@@ -9,15 +9,15 @@ import (
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 
-	"github.com/GhvstCode/Blog-Api/utils/logger"
+	"github.com/GhvstCode/Blog-Api/api/utils/logger"
 )
 
 type Data struct {
 	StatusCode int
-	Message string
-	Result bool
-	Data interface{}
-	Token string `json:"Token, omitempty"`
+	Message    string
+	Result     bool
+	Data       interface{}
+	Token      string `json:"Token, omitempty"`
 }
 
 func (data Data) Send(w http.ResponseWriter) interface{} {
@@ -28,26 +28,26 @@ func (data Data) Send(w http.ResponseWriter) interface{} {
 
 //Message is exported
 func Message(result bool, message string) map[string]interface{} {
-	return map[string]interface{} {"result" : result, "message" : message}
+	return map[string]interface{}{"result": result, "message": message}
 }
 
 func Response(result bool, message string, statusCode int) *Data {
-	 return &Data{
-	 	StatusCode : statusCode,
-	 	Message : message,
-	 	Result : result,
-	 }
+	return &Data{
+		StatusCode: statusCode,
+		Message:    message,
+		Result:     result,
+	}
 }
 
-func Email(email string, Name string, Token string, Host string, Id string){
-	fmt.Printf(Host+"/recoverPassword/"+ Id +"/"+Token )
+func Email(email string, Name string, Token string, Host string, Id string) {
+	fmt.Printf(Host + "/recoverPassword/" + Id + "/" + Token)
 	from := mail.NewEmail("BlogAPI", "BlogAPI@exaample.com")
 	subject := "Password Reset"
 	to := mail.NewEmail(Name, email)
-	content := mail.NewContent("text/plain", "Click on the link below to reset the password for your Bloggy account\n " + Host+"/recoverPassword/"+ Id +"/"+Token + "\nThis link expires in 15 minutes. Ignore this mail if you had nothing to do with this.")
+	content := mail.NewContent("text/plain", "Click on the link below to reset the password for your Bloggy account\n "+Host+"/recoverPassword/"+Id+"/"+Token+"\nThis link expires in 15 minutes. Ignore this mail if you had nothing to do with this.")
 	m := mail.NewV3MailInit(from, subject, to, content)
-	apiKey,ok := os.LookupEnv("SENDGRID_API_KEY")
-	if ok == false{
+	apiKey, ok := os.LookupEnv("SENDGRID_API_KEY")
+	if ok == false {
 		apiKey = os.Getenv("SENDGRID_API_KEY")
 	}
 	request := sendgrid.GetRequest(apiKey, "/v3/mail/send", "https://api.sendgrid.com")

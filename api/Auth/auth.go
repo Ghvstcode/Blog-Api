@@ -7,12 +7,12 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"github.com/GhvstCode/Blog-Api/models"
-	"github.com/GhvstCode/Blog-Api/utils"
+	"github.com/GhvstCode/Blog-Api/api/models"
+	"github.com/GhvstCode/Blog-Api/api/utils"
 )
 
 var Jwt = func(next http.Handler) http.Handler {
-	return  http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		openRoutes := []string{"/api/user/new", "/api/user/login", "api/resetPassword", "api/recoverPassword", "/logs"}
 		requestPath := r.URL.Path
 
@@ -43,7 +43,7 @@ var Jwt = func(next http.Handler) http.Handler {
 			return []byte("os.Getenv"), nil
 		})
 
-		if err != nil || !token.Valid{ //Malformed token, returns with http code 403 as usual
+		if err != nil || !token.Valid { //Malformed token, returns with http code 403 as usual
 			utils.Response(false, "Malformed authentication token", http.StatusBadRequest).Send(w)
 			return
 		}

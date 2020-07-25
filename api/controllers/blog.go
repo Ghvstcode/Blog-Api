@@ -6,8 +6,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/GhvstCode/Blog-Api/models"
-	"github.com/GhvstCode/Blog-Api/utils"
+	"github.com/GhvstCode/Blog-Api/api/models"
+	"github.com/GhvstCode/Blog-Api/api/utils"
 )
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 	resp.Send(w)
 }
 
-func UpdatePost (w http.ResponseWriter, r *http.Request){
+func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	//Content goes  here!
@@ -39,18 +39,17 @@ func UpdatePost (w http.ResponseWriter, r *http.Request){
 	resp.Send(w)
 }
 
-func DeletePost(w http.ResponseWriter, r *http.Request){
+func DeletePost(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	resp :=models.DeletePost(id)
+	resp := models.DeletePost(id)
 	resp.Send(w)
 }
 
-
-func GetOnePost(w http.ResponseWriter, r *http.Request){
+func GetOnePost(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user").(string)
 	vars := mux.Vars(r)
 	id := vars["id"]
-	resp :=models.GetPost(id, userID)
+	resp := models.GetPost(id, userID)
 	resp.Send(w)
 }

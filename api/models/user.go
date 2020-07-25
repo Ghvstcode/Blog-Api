@@ -11,8 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/GhvstCode/Blog-Api/utils"
-	l "github.com/GhvstCode/Blog-Api/utils/logger"
+	"github.com/GhvstCode/Blog-Api/api/utils"
+	l "github.com/GhvstCode/Blog-Api/api/utils/logger"
 )
 
 type Token struct {
@@ -22,28 +22,28 @@ type Token struct {
 
 //a struct to represent a User
 type UserModel struct {
-	ID         primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
-	Name          string `bson:"name" json:"name"`
-	Email         string `bson:"email" json:"email"`
-	Password      string `bson:"password" json:"password"`
-	Subscriptions []string  `bson:"sub, omitempty" json:"sub, omitempty"`
+	ID            primitive.ObjectID `bson:"_id, omitempty" json:"id, omitempty"`
+	Name          string             `bson:"name" json:"name"`
+	Email         string             `bson:"email" json:"email"`
+	Password      string             `bson:"password" json:"password"`
+	Subscriptions []string           `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
 type ReUserModel struct {
-	ID           string `json:"id, omitempty"`
-	Name          string `bson:"name" json:"name"`
-	Email         string `bson:"email" json:"email"`
-	Password      string `bson:"password" json:"password"`
-	Subscriptions []string  `bson:"sub, omitempty" json:"sub, omitempty"`
+	ID            string   `json:"id, omitempty"`
+	Name          string   `bson:"name" json:"name"`
+	Email         string   `bson:"email" json:"email"`
+	Password      string   `bson:"password" json:"password"`
+	Subscriptions []string `bson:"sub, omitempty" json:"sub, omitempty"`
 }
 
 type RecPassword struct {
-	Password           string `json:"password"`
-	ConfirmPassword    string `json:"confirmPassword"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirmPassword"`
 }
 
 type ResPassword struct {
-	Email         string `json:"email"`
+	Email string `json:"email"`
 }
 
 //type Sub struct {
@@ -54,7 +54,7 @@ func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
-func genAuthToken(id string)(string, error){
+func genAuthToken(id string) (string, error) {
 	t := &Token{
 		UserId: id + "_" + time.StampMicro,
 		StandardClaims: jwt.StandardClaims{
@@ -62,7 +62,7 @@ func genAuthToken(id string)(string, error){
 		},
 	}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
-	tokenString, err := token.SignedString([]byte("os.Getenv"))//Change this to load the jwt secret from env file.
+	tokenString, err := token.SignedString([]byte("os.Getenv")) //Change this to load the jwt secret from env file.
 	if err != nil {
 		return "", err
 	}
@@ -81,7 +81,7 @@ func (u *UserModel) validate() *utils.Data {
 		return utils.Response(false, "Password is required", http.StatusBadRequest)
 	}
 
-	if u.Name == ""{
+	if u.Name == "" {
 		return utils.Response(false, "Name is required", http.StatusBadRequest)
 	}
 	if len(u.Name) < 3 {
@@ -94,20 +94,21 @@ func (u *UserModel) validate() *utils.Data {
 
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
-	go func(){
+	go func() {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": u.Email}).Decode(u)
 	}()
-	Error := <- ErrorChan
+	Error := <-ErrorChan
 	if Error == nil {
-		return utils.Response(false, "Invalid Email!" , http.StatusBadRequest)
+		return utils.Response(false, "Invalid Email!", http.StatusBadRequest)
 	}
 
 	return utils.Response(true, "Validated", http.StatusAccepted)
 }
 
-func (u *UserModel) Create() *utils.Data{
+func (u *UserModel) Create() *utils.Data {
 	resp := u.validate()
-	ok := resp.Result; if !ok {
+	ok := resp.Result
+	if !ok {
 		return resp
 	}
 
@@ -118,9 +119,8 @@ func (u *UserModel) Create() *utils.Data{
 	}
 	u.Password = string(hashedPassword)
 
-
-	res, err := User.InsertOne(context.TODO(), &UserModel {
-		ID:           primitive.NewObjectID(),
+	res, err := User.InsertOne(context.TODO(), &UserModel{
+		ID:            primitive.NewObjectID(),
 		Name:          u.Name,
 		Email:         u.Email,
 		Subscriptions: u.Subscriptions,
@@ -134,7 +134,7 @@ func (u *UserModel) Create() *utils.Data{
 
 	var UID string
 	if oid, ok := res.InsertedID.(primitive.ObjectID); ok {
-			UID = oid.Hex()
+		UID = oid.Hex()
 	}
 
 	t, e := genAuthToken(UID)
@@ -157,18 +157,18 @@ func (u *UserModel) Create() *utils.Data{
 	return response
 }
 
-func Login (email string,  password string) *utils.Data {
+func Login(email string, password string) *utils.Data {
 	user := &UserModel{}
 
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
-	go func(){
+	go func() {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(user)
 	}()
-	Error := <- ErrorChan
+	Error := <-ErrorChan
 	if Error != nil {
 		l.ErrorLogger.Println(Error)
-		return utils.Response(false, "Unable to  Login!" , http.StatusBadRequest)
+		return utils.Response(false, "Unable to  Login!", http.StatusBadRequest)
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
@@ -179,7 +179,7 @@ func Login (email string,  password string) *utils.Data {
 	}
 	user.Password = ""
 	//user.ID = user._Id.Hex()
-	t, _ := genAuthToken(user.ID.Hex())//We would eventually check for the error & Log it later bla bla bla
+	t, _ := genAuthToken(user.ID.Hex()) //We would eventually check for the error & Log it later bla bla bla
 	response := utils.Response(true, "Logged In", http.StatusOK)
 	response.Token = t
 	response.Data = [1]*UserModel{user}
@@ -192,12 +192,12 @@ func ResetPassword(email string, Host string) *utils.Data {
 	//2.Check the User exists in the DB and pass the users ID!
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
-	go func(){
+	go func() {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"email": email}).Decode(u)
 	}()
-	Error := <- ErrorChan
+	Error := <-ErrorChan
 	if Error != nil {
-		return utils.Response(false, "An Error occurred" , http.StatusBadRequest)
+		return utils.Response(false, "An Error occurred", http.StatusBadRequest)
 	}
 	//3. Generate the auth token using the UsersName & Email along with the created at field as its signature!
 	t := &Token{
@@ -208,40 +208,40 @@ func ResetPassword(email string, Host string) *utils.Data {
 	}
 
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), t)
-	tokenString, err := token.SignedString([]byte(u.ID.String()+"."+u.Email))
+	tokenString, err := token.SignedString([]byte(u.ID.String() + "." + u.Email))
 	if err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "An Error occurred" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred", http.StatusInternalServerError)
 	}
 
 	utils.Email(u.Email, u.Name, tokenString, Host, u.ID.Hex())
-	return utils.Response(true, "Email Sent" , http.StatusAccepted)
+	return utils.Response(true, "Email Sent", http.StatusAccepted)
 }
 
-func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data{
+func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred, Unable to recover password", http.StatusInternalServerError)
 	}
 
 	u := &UserModel{}
 
 	ErrorChan := make(chan error, 1)
 	defer close(ErrorChan)
-	go func(){
+	go func() {
 		ErrorChan <- User.FindOne(context.TODO(), bson.M{"_id": oid}).Decode(u)
 	}()
-	Error := <- ErrorChan
+	Error := <-ErrorChan
 	if Error != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "An Error occurred, Unable to recover password" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred, Unable to recover password", http.StatusInternalServerError)
 	}
 
 	tk := &Token{}
 
 	token, err := jwt.ParseWithClaims(tkn, tk, func(token *jwt.Token) (interface{}, error) {
-		return []byte(u.ID.String()+"."+u.Email), nil
+		return []byte(u.ID.String() + "." + u.Email), nil
 	})
 
 	if err != nil {
@@ -254,7 +254,7 @@ func RecoverPassword(P *RecPassword, id string, tkn string) *utils.Data{
 		return utils.Response(false, "Malformed authentication token", http.StatusForbidden)
 	}
 
-	if P.Password != P.ConfirmPassword{
+	if P.Password != P.ConfirmPassword {
 		l.ErrorLogger.Println("Password mismatch")
 		return utils.Response(false, "Passwords do not match", http.StatusBadRequest)
 	}
@@ -285,7 +285,7 @@ func GetPosts(id string) *utils.Data {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "Invalid ID" , http.StatusInternalServerError)
+		return utils.Response(false, "Invalid ID", http.StatusInternalServerError)
 	}
 
 	//post := &BlogModel{}
@@ -293,7 +293,7 @@ func GetPosts(id string) *utils.Data {
 	cursor, err := Blog.Find(context.TODO(), bson.M{"ownerId": oid})
 
 	if cursor == nil {
-		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
+		return utils.Response(false, "You do not have any BlogPosts", http.StatusBadRequest)
 	}
 
 	for cursor.Next(ctx) {
@@ -301,7 +301,7 @@ func GetPosts(id string) *utils.Data {
 		err := cursor.Decode(&b)
 		if err != nil {
 			l.ErrorLogger.Println(err)
-			return utils.Response(false, "Unable to  Fetch post" , http.StatusBadRequest)
+			return utils.Response(false, "Unable to  Fetch post", http.StatusBadRequest)
 		}
 		//fmt.Print("b: ", &b)
 		posts = append(posts, &b)
@@ -309,12 +309,12 @@ func GetPosts(id string) *utils.Data {
 
 	if err := cursor.Err(); err != nil {
 		l.ErrorLogger.Println(err)
-		return utils.Response(false, "An Error occurred Unable to  Fetch post" , http.StatusInternalServerError)
+		return utils.Response(false, "An Error occurred Unable to  Fetch post", http.StatusInternalServerError)
 	}
 
 	_ = cursor.Close(ctx)
 	if len(posts) == 0 {
-		return utils.Response(false, "You do not have any BlogPosts" , http.StatusBadRequest)
+		return utils.Response(false, "You do not have any BlogPosts", http.StatusBadRequest)
 	}
 
 	response := utils.Response(true, "Success", http.StatusOK)
